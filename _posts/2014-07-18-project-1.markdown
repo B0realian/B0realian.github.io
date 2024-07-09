@@ -7,6 +7,8 @@ alt: image-alt
 project-date: January 2024
 client: School Project
 category: Games Development
-description: This was my first real school project, after only three months of getting to know Unity and C#. Three programmers teamed up with three artists for 7 weeks of furious development.
+description: ##### 2 the Pods
+This was my first real school project, after only three months of getting to know Unity and C#.
+ Three programmers teamed up with three artists for 7 weeks of furious development.
+![Screenshot](/img/portfolio/podssmall.png "Screenshot")
 ---
-What happens to text that I put here?
