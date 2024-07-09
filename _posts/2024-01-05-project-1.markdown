@@ -11,3 +11,5 @@ description: This was my first real school project, after only three months of g
 ---
 
 Most of the time, at least for us programmers, was spent trying to learn how to do the things the game required.
+
+![Alt Text](gifs/my-gif.gif)
