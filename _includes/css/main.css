@@ -65,16 +65,16 @@ hr.star-light {
 
 hr.star-light:after {
     color: #fff;
-    /*background-color: #{{ site.color.primary }};*/
+    background-color: #{{ site.color.primary }};
 }
 
 hr.star-primary {
-    border-color: #{{ site.color.secondary }};
+    border-color: #fff;
 }
 
 hr.star-primary:after {
-    color: #{{ site.color.secondary }};
-    background-color: #fff;
+    color: #fff;
+    background-color: #{{ site.color.black }};;
 }
 
 .img-centered {
