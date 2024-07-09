@@ -5,7 +5,8 @@ date: 2024-01-05
 img: podssmall.png
 alt: image-alt
 project-date: January 2024
-client: Start Bootstrap
+client: School Project
 category: Games Development
-description: Use this area of the page to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.
+description: This was my first real school project, after only three months of getting to know Unity and C#. Three programmers teamed up with three artists for 7 weeks of furious development.
 ---
+What happens to text that I put here?
