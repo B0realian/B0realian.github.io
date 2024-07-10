@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 modal-id: 1
 date: 2024-01-05
 img: podssmall.png
@@ -7,9 +7,10 @@ alt: image-alt
 project-date: January 2024
 client: School Project
 category: Games Development
-description: This was my first real school project, after only three months of getting to know Unity and C#. Three programmers teamed up with three artists for 7 weeks of furious development.
+description: 2D asymmetrical couch co-op platformer
 ---
 
+This was my first real school project, after only three months of getting to know Unity and C#. Three programmers teamed up with three artists for 7 weeks of furious development.
 Most of the time, at least for us programmers, was spent trying to learn how to do the things the game required.
 
 ![Alt Text](gifs/my-gif.gif)
