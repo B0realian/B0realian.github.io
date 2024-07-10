@@ -4,7 +4,7 @@ modal-id: 2
 date: 2024-03-08
 img: hexy.png
 alt: image-alt
-project-date: March 2024
+project-date: February 2024
 client: School Project
 category: Games Development
 description: 2D Turn based hexagonal strategy

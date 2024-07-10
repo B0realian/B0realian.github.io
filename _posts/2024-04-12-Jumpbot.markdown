@@ -1,0 +1,13 @@
+---
+layout: default
+modal-id: 3
+date: 2024-04-12
+img: jumpbot.png
+alt: image-alt
+project-date: April 2024
+client: School Project
+category: Games Development
+description: 3D platformer
+---
+We got two weeks of lectures and preparations on Unreal Engine, including two days on Blueprints. After that
+it was time to create another four week solo game!
