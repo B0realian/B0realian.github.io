@@ -4,7 +4,7 @@ email: philip@schwerin.se
 url: https://b0realian.github.io/
 description: "Detailing/showing off my forays into games programming."
 keywords: "games programming C# Unity C++ Unreal Engine"
-skills: "Motivated Programmer Student"
+skills: "Motivated Student // Unity & Unreal // C# & C++"
 meta_author: Schwerin Philip
 
 # Google webmaster tools
@@ -49,7 +49,7 @@ social:
   - title: bitbucket
     url: http://bitbucket.org/jekyll
   - title: github
-    url: http://github.com/jekyll
+    url: http://github.com/B0realian
 
 # Postal address (add as many lines as necessary)
 address:
