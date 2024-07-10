@@ -4,12 +4,11 @@ modal-id: 2
 date: 2024-03-08
 img: hexy.png
 alt: image-alt
-project-date: February 2024
+project-date: March 2024
 client: School Project
 category: Games Development
 description: 2D Turn based hexagonal strategy
 ---
-
 Not long after our first project was finished, we dove into our first solo-projects. Four weeks to create a mobile game
 in Unity using Firebase as an online data storage. Since we could no longer rely on artists to create graphics, the games
 we produced were significantly less appealing to the eye. But since I can be incredibly stupid (yes, you can quote me on
