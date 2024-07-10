@@ -3,7 +3,7 @@
 <div class="portfolio-modal modal fade" id="portfolioModal-{{ post.modal-id }}" tabindex="-1" role="dialog"
   aria-hidden="true">
   <div class="modal-content" style="background-color:black;color:white;">
-    <div class="close-modal" data-dismiss="modal" style="color:white;">
+    <div class="close-modal" data-dismiss="modal">
       <div class="lr">
         <div class="rl">
         </div>
@@ -31,13 +31,13 @@
               </li>
               {% endif %}
               {% if post.category %}
-              <li>Service:
+              <li>Category:
                 <strong>{{ post.category }}</strong>
               </li>
               {% endif %}
             </ul>
             <section>
-              {{ content }}
+              {{ post.content }}
             </section>
             <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>
               Close</button>
