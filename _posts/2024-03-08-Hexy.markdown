@@ -7,10 +7,10 @@ alt: image-alt
 project-date: March 2024
 client: School Project
 category: Games Development
-description: Turn based hexagonal strategy
+description: 2D Turn based hexagonal strategy
 ---
 
 Not long after our first project was finished, we dove into our first solo-projects. Four weeks to create a mobile game
-using Firebase as an online data storage. Since we could no longer rely on artists to create graphics, the games we
-produced were significantly less appealing to the eye. But since I can be incredibly stupid (yes, you can quote me on
+in Unity using Firebase as an online data storage. Since we could no longer rely on artists to create graphics, the games
+we produced were significantly less appealing to the eye. But since I can be incredibly stupid (yes, you can quote me on
 that) I spent nearly two whole weeks making graphics.
