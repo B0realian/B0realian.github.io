@@ -25,8 +25,7 @@ inexperience and the time restraint. But I did want to lower gravity near the ap
 after experimenting with various solutions I came up with this:
 
 ´´´csharp
-
-if (_jumpTimer > jumpForce / (normalGravity * 9.81f) * (1 - apexRatio)) ChangeGravity(jumpApexGravity);
+    if (_jumpTimer > jumpForce / (normalGravity * 9.81f) * (1 - apexRatio)) ChangeGravity(jumpApexGravity);
 ´´´
 
 I also wanted the astronaut to stick to surfaces while in zero-G. Something like:
@@ -37,39 +36,36 @@ so I resorted to a raytrace downwards that returns the normal of surfaces fairly
 closest increment of 45&deg;.
 
 ´´´c_cpp
-
-void AlignWithGround()
-{
-    if (gravity) return;
-    RaycastHit2D hitLeft = Physics2D.Raycast(rayLeft.position, -transform.up, rayLength, _layerMask);
-    RaycastHit2D hitRight = Physics2D.Raycast(rayRight.position, -transform.up, rayLength, _layerMask);
-    RaycastHit2D hitCentre = Physics2D.Raycast(rayCentre.position, -transform.up, rayLength, _layerMask);
-    if (hitLeft.collider == null && hitRight.collider == null) return;
-
-    _correctZ = Mathf.RoundToInt(Vector2.SignedAngle(Vector2.up, (hitLeft.normal + hitRight.normal + hitCentre.normal)/3));
-    _correctZ /= 45;
-    _correctZ *= 45;
-   
-    if (body.rotation != _correctZ && jumping && _jumpTimer > 0.5f || body.rotation != _correctZ && !jumping)
+    void AlignWithGround()
     {
-        RotateZ(_correctZ);
+        if (gravity) return;
+        RaycastHit2D hitLeft = Physics2D.Raycast(rayLeft.position, -transform.up, rayLength, _layerMask);
+        RaycastHit2D hitRight = Physics2D.Raycast(rayRight.position, -transform.up, rayLength, _layerMask);
+        RaycastHit2D hitCentre = Physics2D.Raycast(rayCentre.position, -transform.up, rayLength, _layerMask);
+        if (hitLeft.collider == null && hitRight.collider == null) return;
+
+        _correctZ = Mathf.RoundToInt(Vector2.SignedAngle(Vector2.up, (hitLeft.normal + hitRight.normal + hitCentre.normal)/3));
+        _correctZ /= 45;
+        _correctZ *= 45;
+
+        if (body.rotation != _correctZ && jumping && _jumpTimer > 0.5f || body.rotation != _correctZ && !jumping)
+        {
+            RotateZ(_correctZ);
+        }
     }
-}
 ´´´
 
 and applied relative force:
 
 ´´´csharp
-
-if (groundedLeft && groundedRight) body.AddRelativeForce(magBootForce * Vector2.down, ForceMode2D.Force);
+    if (groundedLeft && groundedRight) body.AddRelativeForce(magBootForce * Vector2.down, ForceMode2D.Force);
 ´´´
 
 To make controlling the astronaut intuitive while running up walls, I also added a change in input
 
 ´´´´csharp
-
- if (gravity || !gravity && grounded && !horizontal) _targetSpeed = moveInput.x * _speed;
-else if (!gravity && grounded && horizontal) _targetSpeed = -moveInput.y * _speed;
+    if (gravity || !gravity && grounded && !horizontal) _targetSpeed = moveInput.x * _speed;
+    else if (!gravity && grounded && horizontal) _targetSpeed = -moveInput.y * _speed;
 ´´´´
 
 I should also add that I decided to flip (rotate 180&deg;) the astronaut when jumping in zero-G, figuring this would lead
@@ -96,4 +92,47 @@ and when either module is later moved, both hatches need to close.
 
 ![Hatches responding to module movement](img/portfolio/Pods/hatches.gif "Not going to show you any bugs.")
 
-My initial design seemed to work as intended, relying on raycasts to detect other hatches.
+´´´´csharp
+    void CheckForOtherHatch()
+    {
+        RaycastHit2D hatchCheck = Physics2D.Raycast(checkForOtherHatch.position, Vector2.zero, Mathf.Infinity, HATCHLAYER);
+        _otherHatchPresent = hatchCheck.collider;
+        if (_otherHatchPresent && hatchCheck.collider != coll)
+        {
+            other = hatchCheck.collider.gameObject.GetComponent<Hatches>();
+
+            if (other != null)          // red hatches are on the hatch layer but have no script attached and can thus return null
+            {
+                OpenHatch();
+
+                if (other.module.floating) return;
+                else
+                {
+                    other.OpenHatch();
+                    other.other = this;
+                }
+            }
+        }
+    }
+´´´´
+
+´´´´csharp
+public void CloseHatch()
+    {
+        if (coll.enabled == false) coll.enabled = true;
+        openedHatch = false;
+        spriteRenderer.enabled = true;
+
+        if (other != null)
+        {
+            if (other.other != null) other.other = null;
+            other.CloseHatch();
+            other = null;
+        }
+        audioSource.clip = hClose;
+        audioSource.Play();
+        animator.Play("CloseHatch");
+    }
+´´´´
+
+The game can be found on itch.
