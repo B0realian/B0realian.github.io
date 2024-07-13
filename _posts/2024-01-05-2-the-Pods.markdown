@@ -11,12 +11,12 @@ description: 2D asymmetrical couch co-op platformer.
 ---
 
 This was my first real school project, after only three months of getting to know Unity and C#. Three programmers teamed up
-with three artists for 7 weeks of furious development. Most of the time, at least for us programmers, was spent trying to
-learn how to do the things the game required. One player controls the little astronaut, the other player moves the modules
-around to create a path for the first player.
+with three artists for 7 weeks of furious development. One player controls the little astronaut, the other player moves the modules
+around to create a path for the first player. The astronaut has an oxygen gauge that runs down, inciting the players to hurry.
+There are also a number of deadly traps strewn across the modules for the astronaut to avoid. Upon death, the astronaut is
+simply returned to the start of the level but the modules remain in place. Every new level, the roles are interchanged.
 
-
-![Full screenshot of 2 the Pods](img/portfolio/Pods/Screenshot.png "Get to the pods!")
+![Full screenshot of 2-the-Pods](img/portfolio/Pods/Screenshot.png "Get to the pods!")
 
 Initially, I was only supposed to do character movement, which in itself is often a large post and in this case made more
 complicated by the fact that gravity can be turned off which changes movement dramatically. However, one of the other
