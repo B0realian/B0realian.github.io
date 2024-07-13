@@ -19,7 +19,45 @@ simply returned to the start of the level but the modules remain in place. Every
 ![Full screenshot of 2-the-Pods](img/portfolio/Pods/Screenshot.png "Get to the pods!")
 
 Initially, I was only supposed to do character movement, which in itself is often a large post and in this case made more
-complicated by the fact that gravity can be turned off which changes movement dramatically. However, one of the other
+complicated by the fact that gravity can be turned off which changes movement dramatically. In any case, the other team
+members had requested Celeste-like movement (without double jumping or dashes) which I obviously couldn't manage due to
+inexperience and the time restraint. But I did want to lower gravity near the apex of the jump to make it feel nicer and
+after experimenting with various solutions I came up with this:
+
+'''
+if (_jumpTimer > jumpForce / (normalGravity * 9.81f) * (1 - apexRatio)) ChangeGravity(jumpApexGravity);
+'''
+
+I also wanted the astronaut to stick to surfaces while in zero-G. Something like:
+
+![Magboots in action](img/portfolio/Pods/magboots.gif "Making Kubrick proud!")
+
+so I resorted to a raytrace downwards that returns the normal of surfaces fairly close and rotating the astronaut to the
+closest increment of 45&deg;.
+
+'''
+void AlignWithGround()
+{
+    if (gravity) return;
+    RaycastHit2D hitLeft = Physics2D.Raycast(rayLeft.position, -transform.up, rayLength, _layerMask);
+    RaycastHit2D hitRight = Physics2D.Raycast(rayRight.position, -transform.up, rayLength, _layerMask);
+    RaycastHit2D hitCentre = Physics2D.Raycast(rayCentre.position, -transform.up, rayLength, _layerMask);
+    if (hitLeft.collider == null && hitRight.collider == null) return;
+
+    _correctZ = Mathf.RoundToInt(Vector2.SignedAngle(Vector2.up, (hitLeft.normal + hitRight.normal + hitCentre.normal)/3));
+    _correctZ /= 45;
+    _correctZ *= 45;
+   
+    if (body.rotation != _correctZ && jumping && _jumpTimer > 0.5f || body.rotation != _correctZ && !jumping)
+    {
+        RotateZ(_correctZ);
+    }
+}
+'''
+
+
+
+However, one of the other
 programmers had an exam to study for, then got sick, then his kids got sick in succession and then he was mandated to
 spend Christmas and New Year with his family and so it was mostly up to just two of us the create the game. So, I also
 got inputs and module behaviour, made all animations out of the supplied spritesheets and the animator, code for lethal
