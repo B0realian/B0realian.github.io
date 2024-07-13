@@ -57,3 +57,117 @@ for (int col = 0; col < mapSizeWidth; col++)
 }
 ````
 
+Thinking it would facilitate saving data online, I also decided to save the entire gamestate in one int[]. Having each tile
+perform a raycast to extract the relevant data from possible units seemed like the easiest and most efficient way. I also
+decided to keep the comments as a reference should need arise to tinker with the save function later.
+
+````csharp
+for (int i = 0; i < mapSize; i++)
+{
+    mapSave[i] = mapSave[i] % 100;
+    RaycastHit2D unitCheck = Physics2D.Raycast(TileScript.tiles[i].gameObject.transform.position, new Vector2(0, 0), 0, UNITSLAYER);
+    
+    if (unitCheck.collider != null)
+    {
+        Unit unit = unitCheck.collider.GetComponent<Unit>();
+
+        mapSave[i] += ((int)unit.type + ((int)unit.nationality * (int)Enum.GetValues(typeof(Regiment)).Length)) * 100;
+        mapSave[i] += unit.unitStrength * 10000;
+        mapSave[i] += unit.move * 100000;
+        mapSave[i] += BattlefieldMovement.turn * 1000000;
+        
+        //             turn   mov   str   unit  tile
+        // mapSave[i] = 15     1     3     22    12
+        //              *1m   *100k *10k  *100   *1 
+    }
+
+    PlayerPrefs.SetInt(i.ToString(), mapSave[i]);
+}
+fire.FireSave();
+````
+
+Since UI and input are a bit limited on a mobile, I pretty much used Unity's built in OnMouseDown() event for all game
+input. Each tile and each unit contains this event and when pressed, they refer to the main game script.
+
+````csharp
+public void MouseClicked()
+{
+    if (currentUnit == null) FindUnit();
+    else if (currentUnit.mode == Unit.Mode.Move)
+    {
+        target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D unitCheck = Physics2D.Raycast(target, Vector2.zero, Mathf.Infinity, unitLayerMask);
+        if (unitCheck.collider == null) MoveUnit();
+        else
+        {
+            newUnit = unitCheck.collider.gameObject.GetComponent<Unit>();
+            if (newUnit == currentUnit) ChangeMode(currentUnit.mode);
+            else ChangeUnit();
+        }
+    }
+    else if (currentUnit.mode == Unit.Mode.Melee)
+    {
+        AttackInit();
+        if (newUnit == null) return;
+        if (newUnit.nationality != currentUnit.nationality) Melee(currentUnit.pos / 100);
+    }
+    else if (currentUnit.mode == Unit.Mode.Ranged)
+    {
+        AttackInit();
+        if (newUnit == null) return;
+        if (newUnit.nationality != currentUnit.nationality) RangedAttack();
+    }
+}
+````
+
+Realising that this type of game relies on input for visual updates, I also decided to do away with Unity's
+Update function and instead put all unit movement in co-routines.
+
+![Cavalry charging cavalry.](img/portfolio/Hexy/melee.gif "Glory to the brave!")
+
+````csharp
+private IEnumerator KillingUnit()
+{
+    while (_coroutineIsRunning) yield return null;
+    _coroutineIsRunning = true;
+
+    dyingSprite = dyingUnit.GetComponent<SpriteRenderer>();
+    dyingUnit.FindCurrentTile();
+    Debug.Log("Battle took place on " + currentTile.pos);
+    dyingColor = dyingSprite.color;
+    float r = dyingColor.r;
+    float g = dyingColor.g;
+    float b = dyingColor.b;
+    float a = 1;
+    if (dyingUnit.selected) Deselect(dyingUnit);
+
+    while (r + g + b > 0)
+    {
+        dyingSprite.color = dyingColor;
+        if (r > 0) r -= colorChangeRate;
+        if (g > 0) g -= colorChangeRate;
+        if (b > 0) b -= colorChangeRate;
+        dyingColor = new Color(r, g, b, a);
+        yield return new WaitForFixedUpdate();
+    }
+    dyingUnit.transform.GetChild(0).gameObject.SetActive(false);
+    SceneLoader.infoText.text = dyingUnit.name + " defeated.";
+    while (a > 0)
+    {
+        dyingSprite.color = dyingColor;
+        dyingColor = new Color(r, g, b, a -= colorChangeRate);
+        yield return new WaitForFixedUpdate();
+    }
+
+    dyingUnit.gameObject.SetActive(false);
+    Unit.units.Remove(dyingUnit);
+    _coroutineIsRunning = false;
+    if (_meleeCombat)
+    {
+        StartCoroutine(MovingOneUnit(currentUnit, currentTile.transform.position));
+    }
+}
+````
+
+There was a lot of firsts for me in this project and the severe time constraint made worse by my fumbling with
+graphics meant I pushed myself pretty hard on this one. It also meant I never had time to balance the game.
