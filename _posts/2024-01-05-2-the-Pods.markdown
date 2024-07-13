@@ -55,10 +55,37 @@ void AlignWithGround()
 }
 ´´´
 
+and applied relative force:
 
+´´´C#
+if (groundedLeft && groundedRight) body.AddRelativeForce(magBootForce * Vector2.down, ForceMode2D.Force);
+´´´
 
-However, one of the other
+To make controlling the astronaut intuitive while running up walls, I also added a change in input
+
+´´´´C#
+ if (gravity || !gravity && grounded && !horizontal) _targetSpeed = moveInput.x * _speed;
+else if (!gravity && grounded && horizontal) _targetSpeed = -moveInput.y * _speed;
+´´´´
+
+I should also add that I decided to flip (rotate 180&deg;) the astronaut when jumping in zero-G, figuring this would lead
+to less complexity in movement. I briefly toyed with the idea of allowing the player to rotate the non-grounded astronaut
+at whim but I still haven't made my mind up on that and time was running awfully short because one of the other
 programmers had an exam to study for, then got sick, then his kids got sick in succession and then he was mandated to
 spend Christmas and New Year with his family and so it was mostly up to just two of us the create the game. So, I also
 got inputs and module behaviour, made all animations out of the supplied spritesheets and the animator, code for lethal
 traps and the oxygen system.
+
+The other programmer who was not sick had made a grid for the modules to adhere to as well as defined the layers and
+composition of the actual modules and had written a start for module movement when we reshuffled responsibilities as a
+result of being fewer than we had assumed to be. Taking over someone else's script for the first time was interesting
+and is a bit special in a school project where it would be hugely unfair to rewrite someone else's code as everyone
+needs to be able to show their contributions. As it was, I tested a lot of different designs but had to settle for
+something that is less elegant but produced far fewer bugs: modules can never overlap.
+
+Making the modules hatches was a fun challenge! When two modules dock next to each other, their hatches need to open
+and when either module is later moved, both hatches need to close.
+
+![Hatches responding to module movement](img/portfolio/Pods/hatches.gif "Not going to show you any bugs.")
+
+My initial design seemed to work as intended, relying on raycasts to detect other hatches.
