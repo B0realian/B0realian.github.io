@@ -125,49 +125,49 @@ Update function and instead put all unit movement in co-routines.
 
 ![Cavalry charging cavalry.](img/portfolio/Hexy/melee.gif "Glory to the brave!")
 
-````csharp
-private IEnumerator KillingUnit()
-{
-    while (_coroutineIsRunning) yield return null;
-    _coroutineIsRunning = true;
+<pre><code>
+	private IEnumerator KillingUnit()
+	{
+	    while (_coroutineIsRunning) yield return null;
+	    _coroutineIsRunning = true;
 
-    dyingSprite = dyingUnit.GetComponent<SpriteRenderer>();
-    dyingUnit.FindCurrentTile();
-    Debug.Log("Battle took place on " + currentTile.pos);
-    dyingColor = dyingSprite.color;
-    float r = dyingColor.r;
-    float g = dyingColor.g;
-    float b = dyingColor.b;
-    float a = 1;
-    if (dyingUnit.selected) Deselect(dyingUnit);
+	    dyingSprite = dyingUnit.GetComponent<SpriteRenderer>();
+	    dyingUnit.FindCurrentTile();
+	    Debug.Log("Battle took place on " + currentTile.pos);
+	    dyingColor = dyingSprite.color;
+	    float r = dyingColor.r;
+	    float g = dyingColor.g;
+	    float b = dyingColor.b;
+	    float a = 1;
+	    if (dyingUnit.selected) Deselect(dyingUnit);
 
-    while (r + g + b > 0)
-    {
-        dyingSprite.color = dyingColor;
-        if (r > 0) r -= colorChangeRate;
-        if (g > 0) g -= colorChangeRate;
-        if (b > 0) b -= colorChangeRate;
-        dyingColor = new Color(r, g, b, a);
-        yield return new WaitForFixedUpdate();
-    }
-    dyingUnit.transform.GetChild(0).gameObject.SetActive(false);
-    SceneLoader.infoText.text = dyingUnit.name + " defeated.";
-    while (a > 0)
-    {
-        dyingSprite.color = dyingColor;
-        dyingColor = new Color(r, g, b, a -= colorChangeRate);
-        yield return new WaitForFixedUpdate();
-    }
+	    while (r + g + b > 0)
+	    {
+	        dyingSprite.color = dyingColor;
+	        if (r > 0) r -= colorChangeRate;
+	        if (g > 0) g -= colorChangeRate;
+	        if (b > 0) b -= colorChangeRate;
+	        dyingColor = new Color(r, g, b, a);
+	        yield return new WaitForFixedUpdate();
+	    }
+	    dyingUnit.transform.GetChild(0).gameObject.SetActive(false);
+	    SceneLoader.infoText.text = dyingUnit.name + " defeated.";
+	    while (a > 0)
+	    {
+	        dyingSprite.color = dyingColor;
+	        dyingColor = new Color(r, g, b, a -= colorChangeRate);
+	        yield return new WaitForFixedUpdate();
+	    }
 
-    dyingUnit.gameObject.SetActive(false);
-    Unit.units.Remove(dyingUnit);
-    _coroutineIsRunning = false;
-    if (_meleeCombat)
-    {
-        StartCoroutine(MovingOneUnit(currentUnit, currentTile.transform.position));
-    }
-}
-````
+	    dyingUnit.gameObject.SetActive(false);
+	    Unit.units.Remove(dyingUnit);
+	    _coroutineIsRunning = false;
+	    if (_meleeCombat)
+	    {
+	        StartCoroutine(MovingOneUnit(currentUnit, currentTile.transform.position));
+	    }
+	}
+</code></pre>
 
 There was a lot of firsts for me in this project and the severe time constraint made worse by my fumbling with
 graphics meant I pushed myself pretty hard on this one. It also meant I never had time to balance the game.
