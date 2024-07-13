@@ -24,9 +24,9 @@ members had requested Celeste-like movement (without double jumping or dashes) w
 inexperience and the time restraint. But I did want to lower gravity near the apex of the jump to make it feel nicer and
 after experimenting with various solutions I came up with this:
 
-´´´csharp
+````csharp
     if (_jumpTimer > jumpForce / (normalGravity * 9.81f) * (1 - apexRatio)) ChangeGravity(jumpApexGravity);
-´´´
+````
 
 I also wanted the astronaut to stick to surfaces while in zero-G. Something like:
 
@@ -35,7 +35,7 @@ I also wanted the astronaut to stick to surfaces while in zero-G. Something like
 so I resorted to a raytrace downwards that returns the normal of surfaces fairly close and rotating the astronaut to the
 closest increment of 45&deg;.
 
-´´´c_cpp
+````csharp
     void AlignWithGround()
     {
         if (gravity) return;
@@ -53,20 +53,20 @@ closest increment of 45&deg;.
             RotateZ(_correctZ);
         }
     }
-´´´
+````
 
 and applied relative force:
 
-´´´csharp
+````csharp
     if (groundedLeft && groundedRight) body.AddRelativeForce(magBootForce * Vector2.down, ForceMode2D.Force);
-´´´
+````
 
 To make controlling the astronaut intuitive while running up walls, I also added a change in input
 
-´´´´csharp
+````csharp
     if (gravity || !gravity && grounded && !horizontal) _targetSpeed = moveInput.x * _speed;
     else if (!gravity && grounded && horizontal) _targetSpeed = -moveInput.y * _speed;
-´´´´
+````
 
 I should also add that I decided to flip (rotate 180&deg;) the astronaut when jumping in zero-G, figuring this would lead
 to less complexity in movement.
@@ -92,7 +92,7 @@ and when either module is later moved, both hatches need to close.
 
 ![Hatches responding to module movement](img/portfolio/Pods/hatches.gif "Not going to show you any bugs.")
 
-´´´´csharp
+````csharp
     void CheckForOtherHatch()
     {
         RaycastHit2D hatchCheck = Physics2D.Raycast(checkForOtherHatch.position, Vector2.zero, Mathf.Infinity, HATCHLAYER);
@@ -114,9 +114,9 @@ and when either module is later moved, both hatches need to close.
             }
         }
     }
-´´´´
+````
 
-´´´´csharp
+````csharp
 public void CloseHatch()
     {
         if (coll.enabled == false) coll.enabled = true;
@@ -133,6 +133,5 @@ public void CloseHatch()
         audioSource.Play();
         animator.Play("CloseHatch");
     }
-´´´´
+````
 
-The game can be found on itch.
