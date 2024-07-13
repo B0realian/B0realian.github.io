@@ -186,6 +186,13 @@ section.success {
     background: #{{ site.color.primary }};
 }
 
+section.postmaterial {
+    --code-background: #000;
+    --code-text-align: left;
+    --code-border-color: #eee;
+    --code-border: solid;
+}
+
 @media(max-width:767px) {
     section {
         padding: 75px 0;
