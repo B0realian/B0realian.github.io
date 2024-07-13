@@ -25,6 +25,7 @@ inexperience and the time restraint. But I did want to lower gravity near the ap
 after experimenting with various solutions I came up with this:
 
 ´´´csharp
+
 if (_jumpTimer > jumpForce / (normalGravity * 9.81f) * (1 - apexRatio)) ChangeGravity(jumpApexGravity);
 ´´´
 
@@ -36,6 +37,7 @@ so I resorted to a raytrace downwards that returns the normal of surfaces fairly
 closest increment of 45&deg;.
 
 ´´´c_cpp
+
 void AlignWithGround()
 {
     if (gravity) return;
@@ -58,12 +60,14 @@ void AlignWithGround()
 and applied relative force:
 
 ´´´csharp
+
 if (groundedLeft && groundedRight) body.AddRelativeForce(magBootForce * Vector2.down, ForceMode2D.Force);
 ´´´
 
 To make controlling the astronaut intuitive while running up walls, I also added a change in input
 
 ´´´´csharp
+
  if (gravity || !gravity && grounded && !horizontal) _targetSpeed = moveInput.x * _speed;
 else if (!gravity && grounded && horizontal) _targetSpeed = -moveInput.y * _speed;
 ´´´´
