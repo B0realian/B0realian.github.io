@@ -13,3 +13,47 @@ Not long after our first project was finished, we dove into our first solo-proje
 in Unity using Firebase as an online data storage. Since we could no longer rely on artists to create graphics, the games
 we produced were significantly less appealing to the eye. But since I can be incredibly stupid (yes, you can quote me on
 that) I spent nearly two whole weeks making graphics.
+Confession: I have never played mobile games. But I wanted to make a strategy boardgame with hexagonal tiles where two
+armies meet, so first off I made a weighted random map generator. Weighted in the sense that I didn't want lots of
+impassable mountains in the middle of the board and not so many hills there either.
+
+![Randomly generated maps](img/portfolio/Hexy/mapgeneration.gif "It's oddly satisfying to just keep generating new maps.")
+
+````csharp
+for (int col = 0; col < mapSizeWidth; col++)
+{
+    for (int row = 0; row < mapSizeHeight; row++)
+    {
+        _tilePosYOffset = (-0.5f + (1 + _tilePosYIncrement) / 2) * (col % 2);
+        
+        random = Random.Range(0, 100);
+        random += (Mathf.Abs(col - (mapSizeWidth / 2)) - (mapSizeWidth / 2)) * 2;
+        random += (Mathf.Abs(row - (mapSizeHeight / 2)) - (mapSizeHeight / 2)) * 2;
+        
+        switch (random)
+        {
+            case < 58:
+                random = Random.Range(0, 8);
+                break;
+            case < 65:
+                random = Random.Range(0, 4) + 8;
+                break;
+            case < 80:
+                random = Random.Range(0, 4) + 12;
+                break;
+            case > 79:
+                random = Random.Range(0, 4) + 16;
+                break;
+            default:
+                random = Random.Range(0, 8);
+                break;
+        }
+        
+        mapSave[(col * mapSizeHeight) + row] = random;
+        GameObject tilePrefabCopy = Instantiate(tilePrefabs[random], new Vector3(col * _tilePosXIncrement,
+            (row * _tilePosYIncrement) + _tilePosYOffset, 0), Quaternion.identity);
+        tilePrefabCopy.GetComponent<TileScript>().pos = ((col + 1) * 100) + (row + 1);
+    }
+}
+````
+
