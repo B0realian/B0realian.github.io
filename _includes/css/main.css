@@ -186,6 +186,15 @@ section.success {
     background: #{{ site.color.primary }};
 }
 
+code {
+    background: #000;
+    font-family: monospace;
+    text-align: left;
+    border: solid;
+    border-color: #eee;
+    border-radius: 10px;
+}
+
 section.postmaterial {
     --code-background: #000;
     --code-text-align: left;
