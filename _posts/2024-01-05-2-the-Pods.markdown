@@ -69,7 +69,11 @@ else if (!gravity && grounded && horizontal) _targetSpeed = -moveInput.y * _spee
 ´´´´
 
 I should also add that I decided to flip (rotate 180&deg;) the astronaut when jumping in zero-G, figuring this would lead
-to less complexity in movement. I briefly toyed with the idea of allowing the player to rotate the non-grounded astronaut
+to less complexity in movement.
+
+![Astronaut alternating between normal and zero-G movement](img/portfolio/Pods/zerograv.gif "Gravity is toggled by the builder player.")
+
+I briefly toyed with the idea of allowing the player to rotate the non-grounded astronaut
 at whim but I still haven't made my mind up on that and time was running awfully short because one of the other
 programmers had an exam to study for, then got sick, then his kids got sick in succession and then he was mandated to
 spend Christmas and New Year with his family and so it was mostly up to just two of us the create the game. So, I also
