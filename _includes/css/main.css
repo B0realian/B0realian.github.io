@@ -95,50 +95,26 @@ hr.star-primary:after {
 }
 
 hr.user,
-hr.envelope {
-    border-color: #fff;
-}
-
-hr.envelope:after {
-    color: #fff;
-    background-color: #000;
-}
-
-hr.gamepad {
-    border-color: #fff;
-}
-
-hr.user:after,
-hr.gamepad:after {
-    color: #fff;
-    background-color: #{{ site.color.primary }};
-}
-
-hr.gamepad-dark {
-    border-color: #fff;
-}
-
-hr.gamepad-dark:after {
-    color: #fff;
-    background-color: #000;
-}
-
-hr.star-light {
-    border-color: #fff;
-}
-
-hr.star-light:after {
-    color: #fff;
-    background-color: #{{ site.color.primary }};
-}
-
+hr.envelope,
+hr.gamepad,
+hr.gamepad-dark,
+hr.star-light,
 hr.star-primary {
     border-color: #fff;
 }
 
-hr.star-primary:after {
+hr.envelope:after,
+hr.gamepad-dark:after,
+hr.star-primary {
     color: #fff;
     background-color: #000;
+}
+
+hr.user:after,
+hr.gamepad:after,
+hr.star-light:after {
+    color: #fff;
+    background-color: #{{ site.color.primary }};
 }
 
 .img-centered {
