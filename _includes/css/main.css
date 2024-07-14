@@ -469,7 +469,8 @@ footer .footer-below {
 code {
     background: #{{ site.color.secondary-dark }};
     font-family: monospace;
-    text-align: left;    
+    text-align: left;
+    color: revert;   
 }
 
 pre {
@@ -479,7 +480,7 @@ pre {
     border: solid 2px #eee;
     border-radius: 10px;
     overflow: auto;
-    color: #cc00cc;
+    color: revert;
 }
 
 .portfolio-modal .modal-content .item-details {
