@@ -435,7 +435,7 @@ footer .footer-below {
     margin-bottom: 30px;
 }
 
-.portfolio-modal .modal-content code {
+code {
     background: #000;
     font-family: monospace;
     text-align: left;
@@ -443,12 +443,13 @@ footer .footer-below {
     border-radius: 10px;
 }
 
-code {
+pre {
     background: #000;
     font-family: monospace;
     text-align: left;
     border: solid 2px #eee;
     border-radius: 10px;
+    overflow: auto;
 }
 
 .portfolio-modal .modal-content .item-details {
