@@ -469,9 +469,7 @@ footer .footer-below {
 code {
     background: #{{ site.color.secondary-dark }};
     font-family: monospace;
-    text-align: left;
-    color: #00cc66;
-    variable-color: #cc00cc;
+    text-align: left;    
 }
 
 pre {
@@ -481,14 +479,7 @@ pre {
     border: solid 2px #eee;
     border-radius: 10px;
     overflow: auto;
-}
-
-.token.variable {
-    color: #00cc66;
-}
-
-.o {
-    color: #0000ff;
+    color: #cc00cc;
 }
 
 .portfolio-modal .modal-content .item-details {
@@ -502,7 +493,7 @@ pre {
     width: 75px;
     height: 75px;
     color: #fff;
-    background-color: transparent;
+    background-color: #fff;
     cursor: pointer;
 }
 
