@@ -37,6 +37,7 @@ h6 {
     color: #fff;
 }
 
+hr.envelope,
 hr.gamepad,
 hr.gamepad-dark,
 hr.star-light,
@@ -48,6 +49,16 @@ hr.star-primary {
     border-top: solid 5px;
     text-align: center;
     overflow: visible;
+}
+
+hr.envelope:after {
+    content: "\f0e0";
+    display: inline-block;
+    position: relative;
+    top: -.8em;
+    padding: 0 .25em;
+    font-family: FontAwesome;
+    font-size: 2em;
 }
 
 hr.gamepad:after,
@@ -70,6 +81,15 @@ hr.star-primary:after {
     padding: 0 .25em;
     font-family: FontAwesome;
     font-size: 2em;
+}
+
+hr.envelope {
+    border-color: #fff;
+}
+
+hr.envelope:after {
+    color: #fff;
+    background-color: #000;
 }
 
 hr.gamepad {
@@ -469,8 +489,7 @@ footer .footer-below {
 code {
     background: #{{ site.color.secondary-dark }};
     font-family: monospace;
-    text-align: left;
-    color: revert;   
+    text-align: left;      
 }
 
 pre {
@@ -480,7 +499,7 @@ pre {
     border: solid 2px #eee;
     border-radius: 10px;
     overflow: auto;
-    color: revert;
+    color: unset;
 }
 
 .portfolio-modal .modal-content .item-details {
@@ -494,7 +513,7 @@ pre {
     width: 75px;
     height: 75px;
     color: #fff;
-    background-color: #{{ site.color.secondary-dark }};
+    background-color: #fff;
     cursor: pointer;
 }
 
