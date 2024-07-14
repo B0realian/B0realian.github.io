@@ -37,6 +37,7 @@ h6 {
     color: #fff;
 }
 
+hr.user,
 hr.envelope,
 hr.gamepad,
 hr.gamepad-dark,
@@ -49,6 +50,16 @@ hr.star-primary {
     border-top: solid 5px;
     text-align: center;
     overflow: visible;
+}
+
+hr.user:after {
+    content: "\f007";
+    display: inline-block;
+    position: relative;
+    top: -.8em;
+    padding: 0 .25em;
+    font-family: FontAwesome;
+    font-size: 2em;
 }
 
 hr.envelope:after {
@@ -83,6 +94,7 @@ hr.star-primary:after {
     font-size: 2em;
 }
 
+hr.user,
 hr.envelope {
     border-color: #fff;
 }
@@ -96,6 +108,7 @@ hr.gamepad {
     border-color: #fff;
 }
 
+hr.user:after,
 hr.gamepad:after {
     color: #fff;
     background-color: #{{ site.color.primary }};
