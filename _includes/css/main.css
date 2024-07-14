@@ -467,18 +467,23 @@ footer .footer-below {
 }
 
 code {
-    background: #000;
+    background: #{{ site.color.secondary-dark }};
     font-family: monospace;
-    text-align: left;    
+    text-align: left;
+
 }
 
 pre {
-    background: #000;
+    background: #{{ site.color.secondary-dark }};
     font-family: monospace;
     text-align: left;
     border: solid 2px #eee;
     border-radius: 10px;
     overflow: auto;
+}
+
+.token.variable {
+    color: #00cc66;
 }
 
 .portfolio-modal .modal-content .item-details {
