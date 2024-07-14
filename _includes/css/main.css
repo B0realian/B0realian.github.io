@@ -105,7 +105,7 @@ hr.star-primary {
 
 hr.envelope:after,
 hr.gamepad-dark:after,
-hr.star-primary {
+hr.star-primary:after {
     color: #fff;
     background-color: #000;
 }
