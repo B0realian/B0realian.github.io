@@ -494,7 +494,7 @@ pre {
     width: 75px;
     height: 75px;
     color: #fff;
-    background-color: #fff;
+    background-color: #{{ site.color.secondary-dark }};
     cursor: pointer;
 }
 
