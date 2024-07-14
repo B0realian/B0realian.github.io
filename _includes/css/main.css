@@ -38,6 +38,7 @@ h6 {
 }
 
 hr.gamepad,
+hr.gamepad-dark,
 hr.star-light,
 hr.star-primary {
     margin: 25px auto 30px;
@@ -49,7 +50,8 @@ hr.star-primary {
     overflow: visible;
 }
 
-hr.gamepad:after {
+hr.gamepad:after,
+hr.gamepad-dark:after {
     content: "\f11b";
     display: inline-block;
     position: relative;
@@ -77,6 +79,15 @@ hr.gamepad {
 hr.gamepad:after {
     color: #fff;
     background-color: #{{ site.color.primary }};
+}
+
+hr.gamepad-dark {
+    border-color: #fff;
+}
+
+hr.gamepad-dark:after {
+    color: #fff;
+    background-color: #000;
 }
 
 hr.star-light {
