@@ -103,7 +103,11 @@ hr.star-primary {
     border-color: #fff;
 }
 
-hr.envelope:after,
+hr.envelope:after {
+    color: #fff;
+    background-color: #000;
+}
+
 hr.gamepad-dark:after,
 hr.star-primary:after {
     color: #fff;
