@@ -10,4 +10,65 @@ category: Games Development
 description: 3D platformer
 ---
 We got two weeks of lectures and preparations on Unreal Engine, including two days on Blueprints. After that
-it was time to create another four week solo game!
+it was time to create another four week solo game, this time in 3D!
+I decided to make as simple a game as possible because I planned to learn C++ to make the game. Jumpbot is
+what I'd call a 3D version of Jump King without actually having played Jump King (I was going to but never
+felt like there was time). So, four weeks isn't actually a lot of time but aside from the game not actually
+having an end, I am mostly pleased with the result.
+Holding the jump button charges your jump power and starts a particle effect that changes colour every second
+to work as a gauge for how long the player is pressing.
+
+![Gif of jumpbot charging and jumping](img/portfolio/Jumpbot/botjumping.gif "I can see my house from heeeeere!")
+
+When it gets to purple, you've reached max charge.
+Using the third person template there was really little I needed to add to the code, which was a good thing.
+I quickly realised that I was not learning C++ but rather learning Unreal and while the documentation is fine
+for someone already familiar with programming in Unreal, almost all tutorials and examples online are using
+blueprints. My jump behaviour is summed up in two short functions:
+
+````cpp
+void APlayerCharacter::JumpCharge(const FInputActionValue& Value)
+{
+	if (bJumping || bFalling) return;
+	bJumpCharging = Value.Get<bool>();
+
+	if (JumpChargeSystem && !JumpChargeEffect)
+			JumpChargeEffect = UNiagaraFunctionLibrary::SpawnSystemAttached(JumpChargeSystem, GetMesh(), "spine_05", JumpChargeEffectOffset,
+				FRotator::ZeroRotator, EAttachLocation::KeepRelativeOffset, true, true, ENCPoolMethod::None, true);
+
+	JumpChargeValue += FApp::GetDeltaTime();
+
+	if (JumpChargeValue >= 10.f)
+	{
+		JumpChargeEffect = nullptr;
+		JumpChargeValue = 0;
+	}
+}
+
+void APlayerCharacter::JumpRelease(const FInputActionValue& Value)
+{
+	if (JumpChargeEffect)
+	{
+		JumpChargeEffect->DestroyComponent();
+		JumpChargeEffect = nullptr;
+	}
+
+	if (JumpChargeValue > JumpChargeTime) JumpChargeValue = JumpChargeTime;
+	bJumpCharging = false;
+	bJumping = true;
+	
+	FVector Forward = GetActorForwardVector();
+	FVector Upward = FVector(0, 0, 1);
+	float ForwardImpulse = JumpChargeValue * JumpForceDefault * JumpForwardRatio;
+	float UpwardImpulse = JumpChargeValue * JumpForceDefault;
+	LaunchCharacter(Forward * ForwardImpulse + Upward * UpwardImpulse, true, true);
+	JumpChargeValue = 0;
+}
+````
+
+Weirdly, that is practically the entire game! I coded some moving platforms as well with different kinds of
+behaviours that could be set in the details panel and the animinstance as well, in which I am actually
+tweaking character friction on landing. Obviously, I also made the particle system and changed the jump
+animation and since I thought I had the time I added inverse kinematics. Other than that, it was down to
+building a level, and that of course took a lot of time. I spent two and a half weeks just trying to learn
+how to write working code for unreal though.
