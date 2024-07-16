@@ -171,9 +171,9 @@ void ATridentAttack::BeginPlay()
 	SystemRotation = GetActorRotation();
 	AActor* ActorRef = GetWorld()->GetFirstPlayerController()->GetPawn();
 	CarDriver = Cast<ACharacterInput>(ActorRef);
-	MovementVector = -FVector(	FMath::Sin(FMath::DegreesToRadians(SystemRotation.Yaw)) * FMath::Sin(FMath::DegreesToRadians(SystemRotation.Roll)),  
-							    FMath::Cos(FMath::DegreesToRadians(SystemRotation.Yaw)) * FMath::Sin(FMath::DegreesToRadians(SystemRotation.Roll)),  
-								FMath::Cos(FMath::DegreesToRadians(SystemRotation.Roll)));															 
+	MovementVector = -FVector(	FMath::Sin(FMath::DegreesToRadians(SystemRotation.Yaw)) * FMath::Sin(FMath::DegreesToRadians(SystemRotation.Roll)),
+		FMath::Cos(FMath::DegreesToRadians(SystemRotation.Yaw)) * FMath::Sin(FMath::DegreesToRadians(SystemRotation.Roll)),
+		FMath::Cos(FMath::DegreesToRadians(SystemRotation.Roll)));															 
 	TridentLocation = SystemLocation - (TridentOffsetDistance * MovementVector);
 	ImpactTime = (TridentOffsetDistance / (ProjectileSpeed * NiagaraVelocityScale.Z)) - 0.05f;
 	WarningAudio->SetSound(WarningSound);
@@ -222,9 +222,9 @@ void ATridentAttack::Tick(float DeltaTime)
 }
 ````
 
-The trident itself is spawned above. Since the smoketrail needs to change behaviour
-post impact, I am setting its variables here and let Niagara lerp between the two
-positions:
+The trident itself is spawned a set distance above the system's location (the MovementVector *
+TridentOffsetDistance in the codeblock above). Since the smoketrail needs to change behaviour
+post impact, I am setting its variables here and let Niagara lerp between the two positions:
 
 ````cpp
 void ATridentAttack::SpawnProjectile()
@@ -244,5 +244,5 @@ void ATridentAttack::SpawnProjectile()
 
 Another particle effect I want to mention is the tire particles:
 
-![Kart driving with particles coming off its tires](img/portfolio/Hellraced/tireparticles.gif "Blood and dust.")
+![Kart driving with particles coming off its tires](img/portfolio/Hellracer/tireparticles.gif "Blood and dust.")
 
