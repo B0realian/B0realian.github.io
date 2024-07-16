@@ -101,7 +101,7 @@ and when either module is later moved, both hatches need to close.
         {
             other = hatchCheck.collider.gameObject.GetComponent<Hatches>();
 
-            if (other != null)          // red hatches are on the hatch layer but have no script attached and can thus return null
+            if (other != null)          // red hatches can return null
             {
                 OpenHatch();
 
