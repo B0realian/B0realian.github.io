@@ -158,3 +158,91 @@ if (ACharacterInput* Driver = Cast<ACharacterInput>(OtherActor))
 }
 ````
 
+The spawned system begins with the warning effect and starts a timer for spawning the
+trident. It is a bit crude and a couple of weeks later I learnt how to make timed
+events in unreal but never had the time to update this code.
+
+````cpp
+void ATridentAttack::BeginPlay()
+{
+	Super::BeginPlay();
+	TargetComponent->OnComponentBeginOverlap.AddDynamic(this, &ATridentAttack::OnCapsuleBeginOverlap);
+	SystemLocation = GetActorLocation();
+	SystemRotation = GetActorRotation();
+	AActor* ActorRef = GetWorld()->GetFirstPlayerController()->GetPawn();
+	CarDriver = Cast<ACharacterInput>(ActorRef);
+	MovementVector = -FVector(	FMath::Sin(FMath::DegreesToRadians(SystemRotation.Yaw)) * FMath::Sin(FMath::DegreesToRadians(SystemRotation.Roll)),  
+							    FMath::Cos(FMath::DegreesToRadians(SystemRotation.Yaw)) * FMath::Sin(FMath::DegreesToRadians(SystemRotation.Roll)),  
+								FMath::Cos(FMath::DegreesToRadians(SystemRotation.Roll)));															 
+	TridentLocation = SystemLocation - (TridentOffsetDistance * MovementVector);
+	ImpactTime = (TridentOffsetDistance / (ProjectileSpeed * NiagaraVelocityScale.Z)) - 0.05f;
+	WarningAudio->SetSound(WarningSound);
+	TridentAudio->SetSound(FlyingSound);
+	FireAudio->SetSound(BurningSound);
+	ImpactAudio->SetSound(ImpactSound);
+	
+	SpawnWarning();
+}
+
+void ATridentAttack::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+		
+	if (bAttackInitialising)
+	{
+		WarningTimer += DeltaTime;
+		if (WarningTimer >= WarningTime)
+		{
+			SpawnProjectile();
+			WarningAudio->Stop();
+			bAttackStarted = true;
+			bAttackInitialising = false;
+			WarningTimer = 0.f;
+		}
+	}
+	else if (bAttackStarted)
+	{
+		AttackTimer += DeltaTime;
+		if (AttackTimer >= 9.f - WarningTime)
+		{
+			bAttackActive = false;
+			bAttackStarted = false;
+			AttackTimer = 0.f;
+			DeactivateAndDestroy();
+		}
+		else if (AttackTimer >= ImpactTime && !bImpact)
+		{
+			bImpact = true;
+			TridentAudio->Stop();
+			ImpactAudio->Play();
+			bAttackActive = true;
+			CarDriver->StartScreenShake(1, 0.5f);
+		}
+	}
+}
+````
+
+The trident itself is spawned above. Since the smoketrail needs to change behaviour
+post impact, I am setting its variables here and let Niagara lerp between the two
+positions:
+
+````cpp
+void ATridentAttack::SpawnProjectile()
+{
+	FRotator EffectRotation = FRotator(SystemRotation.Pitch, -SystemRotation.Yaw, SystemRotation.Roll);
+	TridentEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Trident, TridentLocation, EffectRotation, FVector(1.f), true, true);
+	FVector ProjectileVector = MovementVector * NiagaraVelocityScale;
+	FVector SmokeOffsetFlying = MovementVector * -100.f;
+	TridentEffect->SetNiagaraVariableVec3(FString("TridentVelocity"), ProjectileVector);
+	TridentEffect->SetNiagaraVariableFloat(FString("TridentSpeed"), ProjectileSpeed);
+	TridentEffect->SetNiagaraVariableVec3(FString("SmokeOffset"), SmokeOffsetFlying);
+	TridentEffect->SetNiagaraVariableVec3(FString("SmokeOffsetStanding"), FVector(0.f, 0.f, 100.f));
+	TridentAudio->Play();
+	FireAudio->Play();
+}
+````
+
+Another particle effect I want to mention is the tire particles:
+
+![Kart driving with particles coming off its tires](img/portfolio/Hellraced/tireparticles.gif "Blood and dust.")
+
