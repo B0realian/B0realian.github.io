@@ -130,4 +130,31 @@ The obstacle that was most complicated to write code for was the trident attack.
 
 This was because I realised it would be hopeless to place them in the level except for where
 they are supposed to strike the ground and I needed to time this with when the player is close
-but also to give the player fair warning.
+but also to give the player fair warning. So I ended up making a spawner as well as the system
+itself where the system is actually both a warning system and the tridentsystem. Initially, I
+made the spawner calculate a distance ahead along the players forward vector but even though
+we designed the level to be fairly straight there, this became too chaotic and so I simply
+added a random distance to a manually placed location for each trident.
+
+````cpp
+if (ACharacterInput* Driver = Cast<ACharacterInput>(OtherActor))
+{
+	if (bSetSpawnManually)
+	{
+		float RandomX = FMath::RandRange(-ManualRangeX, ManualRangeX);
+		float RandomY = FMath::RandRange(-ManualRangeY, ManualRangeY);
+		SpawnPosition = FVector(ManualLocation.X + RandomX, ManualLocation.Y + RandomY, ManualLocation.Z);
+	}
+	else
+	{
+		FVector DriverLocation = Driver->GetActorLocation();
+		FVector DriverVector = Driver->GetActorForwardVector();
+		SpawnPosition = DriverLocation + SpawnDistance * DriverVector;
+		SpawnPosition.Z += TridentHeightAdjust;
+		SpawnPosition.X += TridentXAdjust;
+		SpawnPosition.Y += TridentYAdjust;
+	}
+	SpawnTridentAttack(SpawnPosition);
+}
+````
+
