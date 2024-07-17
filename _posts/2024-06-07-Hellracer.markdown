@@ -291,5 +291,130 @@ void ACharacterInput::WheelParticlesGo(bool bParticleSpeed)
 }
 ````
 
+I also did music and sounds for the game. A lot of time was spent trying to find fitting
+sounds and in the end two of the artists had to help me hunt more of them down. There was
+also a lot of mixing and cutting of sounds. Then I spent a couple of days getting to grips
+with metasounds only to discover there is no (documented) way to control them through C++.
+(I looked through a tutorial series on how to control Metasounds through C++ several times
+but the series creator is actually injecting variables with C++ and controlling the sounds
+with blueprints). So, I pivoted to Soundcues. After working with them for a while I realised
+that almost everything you can do with Metasounds (that I wanted to do) can be done in C++
+anyway. My engine sound looked like this:
 
+![Bunch of soundcue nodes](img/portfolio/Hellracer/soundengine.png "Vrooom!")
 
+and is controlled like this:
+
+````cpp
+void ACharacterInput::EngineNoise(float DeltaTime)
+{
+	if (bTurboCharging)
+	{
+		if (rpm > AnimInstance->CarSpeed) rpm = AnimInstance->CarSpeed;
+		if (AnimInstance->CarSpeed - rpm > 100.f)
+		{
+			rpm = FMath::Lerp(Postrpm, AnimInstance->CarSpeed, (RevUpTime / 0.2f));
+			RevUpTime += DeltaTime;
+		}
+		else
+		{
+			rpm = AnimInstance->CarSpeed;
+			Prerpm = rpm;
+			RevDownTime = 0.f;
+		}
+		if (AcceleratingValue > 0.8f)
+		{
+			if (TurboPitch < 4.f) TurboPitch += DeltaTime;
+			else bTurboCharged = true;
+			TurboCharge = TurboPitch;
+		}
+	}
+	else
+	{
+		if (rpm > 0.f)	rpm = FMath::Lerp(Prerpm, 0.f, (RevDownTime / (Prerpm / 2000.f)));
+		TurboPitch = FMath::Lerp(TurboCharge, 0.f, RevDownTime / 0.5f);
+		Postrpm = rpm;
+		RevDownTime += DeltaTime;
+		RevUpTime = 0.f;
+		if (bTurboCharged)
+		{
+			TurboRelease->Play();
+			TurboCharge = 0.f;
+			bTurboCharged = false;
+		}
+	}
+
+	if (rpm > 500.f)
+	{
+		Crossfader = (rpm - 500.f) / 1000.f;
+	}
+	else if (rpm < 500.f) Crossfader = 0.f;
+	EngineAudio->SetFloatParameter("EnginePitch", rpm);
+	EngineAudio->SetFloatParameter("TurboPitch", TurboPitch);
+	EngineAudio->SetFloatParameter("EngineCrossfade", Crossfader);
+}
+````
+
+Part of the complexity arises from the fact that a Soundcue can only double the pitch of a
+sample, whereas the pitch of an engine should increase more. If I understand correctly,
+Metasounds can increase the pitch far more, so that would certainly have simplified things.
+Another complication was that I wanted the car to rev down slower than the speed because it
+just didn't sound natural to me otherwise. In retrospect I was probably wrong but the change
+I brought this way was fairly small and at the time I thought it sounded a lot better. I
+should probably add that the turbo release sound is on a different cue. I tried putting them
+all together in the same soundcue but for some reason it refused to work.
+I mentioned earlier that I learnt to make timed events. I used them for the music player.
+Realising that it can get a bit tiresome with just the one song to keep you company on
+endless playthroughs, I made a system that would play a random song from a list every time
+the last song ended.
+
+![Some soundcue nodes](img/portfolio/Hellracer/soundmusic.png "Boooorn to be wiiiiiild!")
+
+````cpp
+void ACharacterInput::MusicPlayerStart()
+{
+	if (MusicPlayerAudio)
+	{
+		if (MusicPlayerAudio->IsPlaying()) MusicPlayerAudio->Stop();
+		int Rand = FMath::RandRange(0, 6);
+		MusicPlayerAudio->SetIntParameter("SongNumber", Rand);
+		switch (Rand)
+		{
+		case 0: CurrentClip = Clip00;
+			break;
+		case 1: CurrentClip = Clip01;
+			break;
+		case 2: CurrentClip = Clip02;
+			break;
+		case 3: CurrentClip = Clip03;
+			break;
+		case 4: CurrentClip = Clip04;
+			break;
+		case 5: CurrentClip = Clip05;
+			break;
+		case 6: CurrentClip = Clip06;
+			break;
+		default:
+			MusicPlayerAudio->Stop();
+			CurrentClip = 3600.f;
+			break;
+		}
+		GetWorldTimerManager().ClearTimer(MusicHandle);
+		GetWorldTimerManager().SetTimer(MusicHandle, FTimerDelegate::CreateLambda([this]()
+			{
+				MusicPlayerStart();
+			}), CurrentClip, false);
+		MusicPlayerAudio->Play();
+		
+	}	
+}
+````
+
+This actually worked smashingly, until you finish your three laps and the level is
+reloaded. Even though I made sure to clear the timer, stop the music and remove all
+pointers, the music would crash the game. At the time I supposed it had something to
+do with sound being persistent in Unreal and at this point I was frantically fixing
+bugs minutes before the presentation. So I commented the player out and the game
+suffers from having just the one song during play.
+
+And on that note (hah!) I finish displaying my input in this game.
