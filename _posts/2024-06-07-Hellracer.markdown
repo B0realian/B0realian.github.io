@@ -246,3 +246,50 @@ Another particle effect I want to mention is the tire particles:
 
 ![Kart driving with particles coming off its tires](img/portfolio/Hellracer/tireparticles.gif "Blood and dust.")
 
+While most of the track is supposed to be sand or rock, the tunnel is organic. So I made two
+types of tire particles. Initially, I had planned on raycasting to find what material was used
+below the kart but one of the artists made a single material for the entire circuit, so this
+was not possible. Instead, I opted to go with a trigger box around the tunnel. Again, quite
+crude but under the circumstances it was the simplest solution I could think of. I was lucky
+the tunnel was off to the side enough for a single box to cover its entirety.
+There are also a number of jumps and places where the kart can fall off the track during which
+time the kart is airborne and should not produce any particles.
+
+````cpp
+void ACharacterInput::WheelParticlesGo(bool bParticleSpeed)
+{
+	if (bAirborne)
+	{
+		if (TireEffect)
+		{
+			WheelParticlesDeactivate();
+			bParticleSpeedOld = false;
+		}
+		AnimInstance->isFalling = true;
+		return;
+	}
+	else
+	{
+		AnimInstance->isFalling = false;
+	}
+	if (bParticleSpeed == bParticleSpeedOld && bTunnel == bTunnelOld) return;
+	else if (!bTunnel) TireSystem = DustSystem;
+	else if (bTunnel) TireSystem = BloodSplatterSystem;
+	if (bTunnel != bTunnelOld && TireEffect) WheelParticlesDeactivate();
+
+	if (bParticleSpeed)
+	{
+		TireEffect = UNiagaraFunctionLibrary::SpawnSystemAttached(TireSystem, CarMesh, NAME_None, FVector(-75.f, -50.f, 5.f), FRotator(0.F),
+			EAttachLocation::SnapToTargetIncludingScale, true, true);
+		TireEffect2 = UNiagaraFunctionLibrary::SpawnSystemAttached(TireSystem, CarMesh, NAME_None, FVector(-75.f, 50.f, 5.f), FRotator(0.F),
+			EAttachLocation::SnapToTargetIncludingScale, true, true);
+	}
+	else if (TireEffect) WheelParticlesDeactivate();
+
+	bTunnelOld = bTunnel;
+	bParticleSpeedOld = bParticleSpeed;
+}
+````
+
+
+
