@@ -417,4 +417,6 @@ do with sound being persistent in Unreal and at this point I was frantically fix
 bugs minutes before the presentation. So I commented the player out and the game
 suffers from having just the one song during play.
 
-And on that note (hah!) I finish displaying my input in this game.
+And on that note (hah!) I finish displaying my input in this game. It is available for download:
+
+https://yrgo-game-creator.itch.io/hellracer
