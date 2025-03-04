@@ -1,0 +1,133 @@
+---
+layout: default
+modal-id: 5
+date: 2024-10-10
+img: escapevr.png
+alt: image-alt
+project-date: October 2024
+client: School Project
+category: Games Development
+description: VR Escape Room
+---
+After a summer with decidedly less studying than planned, we dove into the next group project,
+this time with six weeks from start to finish. We were, ostensibly, four programmers and no
+artists for this project. However, as things panned out, one of our four was ill for most of
+the time and ended up not contributing at all, whereas another was tied up with looking for
+investors for a previous project and ended up contributing only a little.
+Getting to grips with the Meta VR SDK took us at least a week, particularly as we wanted to
+leverage the hand tracking available in Meta's SDK. I suffered further with hardware issues
+that took another week to solve (I did a lot of coding during that week as well, but had no
+way of testing it in VR). The issue is a previously documented one: Meta's VR-headsets prefer
+to look for the integrated GPU on laptops, instead of the proper NVidia or AMD GPU available
+on gaming laptops, while Windows naturally prefers the larger GPU. The result is that OS and
+headset don't communicate with each other. The most commonly found solution to this problem
+is to change Window's graphics settings for Unity to use the motherboard GPU for the headset.
+This did not work for me as I had also set (and then promptly forgotten) my NVidia GPU as
+default in the NVidia Control Panel.
+It should be said that the solution to use the integrated GPU is a bad one. The whole point of
+PCVR is to benefit from the powerful GPU. So, my tip for the day is to tell Windows to use the
+big GPU, tell NVidia Panel the same (given that this is what you have), and lastly to tell
+Taskmanager to prioritise OVRServer. This, at least, is what has worked for me.
+
+![Graphics Settings](img/portfolio/EscapeVR/settings.png "Make your PCVR graphics sing!")
+
+With those hurdles overcome, I decided to make a super simple puzzle to draw the player in:
+There are three pedestals in eye catching marble spread across the room. There are also three
+lion statues in the same three marble colours in various places. It sounds ridiculous but in
+playtesting we discovered that a lot of players failed at this puzzle. I can only surmise that
+it is because they are overwhelmed by the VR representation.
+
+![Putting the lion in place](img/portfolio/EscapeVR/lion.gif "Sit! Good cat.")
+
+The lion puzzle is only roughly 50 lines of code because of how it is structured. The lions are
+children of the pedestals and so only need to check distance when snapped to them.
+
+````cs
+public class Lion : MonoBehaviour
+{
+    public bool inPosition()
+    {
+        return (Math.Abs(this.gameObject.transform.localPosition.x) < 0.08f &&
+                Math.Abs(this.gameObject.transform.localPosition.z) < 0.08f);
+    }
+}
+````
+
+````cs
+public class LionPuzzle : MonoBehaviour
+{
+    private static List<Lion> lions = new List<Lion>();
+    public static event Action OnLionPuzzleComplete;
+
+    private void Start()
+    {
+        foreach (GameObject lion in GameObject.FindGameObjectsWithTag("Lion"))
+        {
+            lions.Add(lion.GetComponent<Lion>());
+        }
+    }
+
+    public void LionUpdate() // Function is called whenever a lion is snapped to a pedestal
+    {
+        if (AllLionsInPlace())
+        {
+            foreach (Lion lion in lions)
+            {
+                lion.gameObject.GetComponentInChildren<SnapInteractor>().InjectOptionalTimeOutInteractable(null);
+                lion.gameObject.GetComponentInChildren<SnapInteractor>().InjectOptionaTimeOut(0);
+                lion.gameObject.GetComponentInChildren<TouchHandGrabInteractable>().enabled = false;
+                lion.gameObject.GetComponentInChildren<Grabbable>().enabled = false;
+                lion.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            }
+            OnLionPuzzleComplete?.Invoke();
+        }
+    }
+
+    private static bool AllLionsInPlace()
+    {
+        foreach(Lion lion in lions)
+        {
+            if (!lion.inPosition()) return false;
+        }
+        return true;
+    }
+}
+````
+
+Since we were without artists, we made very simple assets, either cobbling primitives together
+in Unity or in Blender. The lion's, however, is a free asset by AK Studio Art called "Sitting
+Lion Statue". Even using free assets off the internet created work, however, as colliders must be
+less than a few hundred triangles for hand tracking to work. Simplifying the geometry of a mesh
+was time consuming.
+
+![Full lion](img/portfolio/EscapeVR/lion.png "Geometry of the visible lion.")
+
+![Colliding lion](img/portfolio/EscapeVR/lioncoll.png "Simplified geometry of collider.")
+
+Next up was a puzzle in the shape of a safe with a combination lock. Again, this required very
+little code. I wanted a system that could handle any number of button presses before accepting
+the correct combination, which led me to simply advance the sequence if the last pressed button
+was the correct one at that point in the sequence.
+
+````cs
+public void ButtonPress(int keyNumber)
+{
+    if (boxOpen) return;
+    if (keyNumber == correctSequence[sequenceNumber])
+    {
+        if (sequenceNumber == correctSequence.Length - 1)
+        {
+            StartCoroutine(UnBoxing());
+            boxOpen = true;
+            LockBoxOpen?.Invoke();
+        }
+        else sequenceNumber++;
+    }
+    else sequenceNumber = 0;
+}
+````
+
+![What's in the BOX!!](img/portfolio/EscapeVR/safe.gif "If only I could have made a gif that was infinitely long.")
+
+
+WIP!! Check back later for the full glorious presentation of my part in this school project!
