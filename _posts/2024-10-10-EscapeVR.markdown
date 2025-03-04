@@ -129,5 +129,23 @@ public void ButtonPress(int keyNumber)
 
 ![What's in the BOX!!](img/portfolio/EscapeVR/safe.gif "If only I could have made a gif that was infinitely long.")
 
+Naturally, the escape room is littered with clues. One of the other programmers made a shader that
+shows an otherwise invisible layer and so, armed with a crystal ball, the player can look at
+various objects and see things that were not otherwise there. So I grabbed a painting of Herschel
+and added a planet for him to look at
+
+![You see that?](img/portfolio/EscapeVR/herschel.png "I swear, if you look at it long enough it seems to move!")
+
+although when viewed through the crystal ball, the player sees a clue instead:
+
+![Image as text](img/portfolio/EscapeVR/herschelclue.png "Oh, it all makes so much sense of a sudden.")
+
+This, of course, serves as a clue as to what my final and biggest puzzle for the project was:
+a planetarium. Only the player needs to find all the planets, put them in order, and enter the
+correct year in the control box.
+
+![Picker of planets](img/portfolio/EscapeVR/planet.gif "I found it. Can I keep it?")
+
+
 
 WIP!! Check back later for the full glorious presentation of my part in this school project!
