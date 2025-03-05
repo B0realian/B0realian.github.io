@@ -28,7 +28,7 @@ It should be said that the solution to use the integrated GPU is a bad one. The 
 PCVR is to benefit from the powerful GPU. So, my tip for the day is to tell Windows to use the
 big GPU, tell NVidia Panel the same (given that this is what you have), and lastly to tell
 Taskmanager to prioritise OVRServer. This, at least, is what has worked for me.
-
+  
 ![Graphics Settings](img/portfolio/EscapeVR/settings.png "Make your PCVR graphics sing!")
 
 With those hurdles overcome, I decided to make a super simple puzzle to draw the player in:
