@@ -108,7 +108,7 @@ Next up was a puzzle in the shape of a safe with a combination lock. Again, this
 little code. I wanted a system that could handle any number of button presses before accepting
 the correct combination, which led me to simply advance the sequence if the last pressed button
 was the correct one at that point in the sequence.
-
+  
 ````cs
 public void ButtonPress(int keyNumber)
 {
@@ -126,7 +126,7 @@ public void ButtonPress(int keyNumber)
     else sequenceNumber = 0;
 }
 ````
-
+  
 ![What's in the BOX!!](img/portfolio/EscapeVR/safe.gif "If only I could have made a gif that was infinitely long.")
 
 Naturally, the escape room is littered with clues. One of the other programmers made a shader that
@@ -154,7 +154,7 @@ that for the lions (each snapping point must still accept any key, or the player
 wasn't the correct one, meaning I am checking against ALL keys every time one is snapped in place),
 it becomes much simpler and, crucially, since the code is only executed on input from the player
 the cost is irrelevant.
-
+  
 ````cs
 public void AddedPlanet()   // Function is called when a key is snapped to an orbit
 {
@@ -177,13 +177,13 @@ public void RemovedPlanet() // Function is called when a key is removed from an 
 Another feature was that I could have slightly different sizes for the keys and real planets which
 made debugging easier as there was a visual cue to the keys destroying themselves and the planets
 being revealed (look at Mars, furthest to the left).
-
+  
 ![Putter of planets](img/portfolio/EscapeVR/lastplanet.gif "Hey! Where did it go?")
 
 To simplify things, the planetarium won't start at the press of the start button until the planets
 are revealed. I also decided to make it so that it always takes the same time to rotate to the
 input year, meaning it rotates a lot faster if traversing a thousand years than ten.
-
+  
 ![Go!](img/portfolio/EscapeVR/frotation.gif "Spool up the FTL-draaaaooooMyGod!!")
 
 ````cs
@@ -214,5 +214,5 @@ and choosing textures. Sound design was pretty non-existent for this project but
 for when the room rotates and one on completion of a puzzle. Even though manpower was virtually
 halved, solid planning and excellent cooperation between the two of us that remained meant we
 managed to get the project finished on time with hardly any crunch.
-
+  
 ![Infinity and beyond?](img/portfolio/EscapeVR/end.gif "That isn't supposed to happen until 2025, what kind of lame game is this?")
