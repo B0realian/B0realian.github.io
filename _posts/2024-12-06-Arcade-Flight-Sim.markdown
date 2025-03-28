@@ -81,8 +81,319 @@ void APilot::ThrottleUp(const FInputActionValue& Value)
 }
 ````
 
+Next, it was time to hook up HOTAS! It all seems fairly straight forward in UE: enable the Raw
+Input Module and add mapping with modifiers, much like with normal input. And after some initial
+confusion about how the arrays map to the module (I first thought there was a separate input array
+for each controller) it just worked! I spent a couple of days fine tuning and then it stopped
+working. A whole day passed going over every possible setting and trying every conceivable value
+in every conceivable combination. Another day, frantically searching forums, disabling and
+re-enabling Raw Input, resetting the usual suspects (Intermediary, Saved, and Binaries). I took
+another day starting a new project and recreating all my classes and finally, everything worked
+again!
 
-Link to forum post:  https://forums.unrealengine.com/t/raw-input-suddenly-stops/2119230
+Until the next day when suddenly nothing worked again. Having been ultra careful not to interfere
+with anything input related, I was beginning to suspect the problem lay with the engine and so
+began to look for where input is cached. Fortunately, the first and most obvious place to look
+proved to be sufficient! Defaultinput.ini contains all settings in plain text, including raw input
+if you have made any changes from default. Simply deleting the lines referring to raw input and
+then reimporting the settings in the editor got everything to work again. I made a forum post
+detailing the steps although have not heard anything since.
 
-More Stuff coming!
+https://forums.unrealengine.com/t/raw-input-suddenly-stops/2119230
 
+Now that I had a fix (however the raw input worked at time of Build persists in the Build) I was
+back on track! The downside was that with spending nearly two weeks finding an internship (I had
+to write a program as a work sample) and another week debugging raw input, I was now about halfway
+through the project and had *very* little to show for it. So I decided to quickly add some
+destructible buildings before creating enemies. All I needed was a couple of cubes and a decent
+particle explosion, the latter of which would be repurposed for the enemies anyway!
+
+That's when I stumbled over dynamic materials. I was immediately struck by how incredibly versatile
+the system is and decided to shift focus towards learning how to leverage it.
+
+````cpp
+void ADestructibleObjectSimple::RandomizeSettings()
+{
+	MaterialDissolveAlpha = FMath::RandRange(MinAlpha, MaxAlpha);
+	int RotationRate = FMath::RandRange(0, 3);
+	DissolveTextureRotation = 0.25f * RotationRate;
+}
+
+void ADestructibleObjectSimple::SetDynamicMaterial()
+{
+	DynamicMaterial = DestructibleMesh->CreateDynamicMaterialInstance(0);
+	DynamicMaterial->SetScalarParameterValue(FName("Specular"), Specular);
+	DynamicMaterial->SetScalarParameterValue(FName("Roughness"), Roughness);
+	DynamicMaterial->SetVectorParameterValue(FName("BaseColour"), BaseColour);
+	DynamicMaterial->SetScalarParameterValue(FName("Rotation"), DissolveTextureRotation);
+	DynamicMaterial->SetScalarParameterValue(FName("Alpha"), 0.f);
+	DestructibleMesh->SetMaterial(0, DynamicMaterial);
+}
+````
+
+I started with a simple version that starts by randomizing its "destroyed" state. Basically, I am
+just dissolving the texture by discarding pixels according to an alpha-mask. When the mesh is hit,
+I spawn a particle system and adjust visibility.
+
+````cpp
+void ADestructibleObjectSimple::OnHit(Blah blah)
+{
+	if (bDestroyed) return;
+
+	DynamicMaterial->SetScalarParameterValue(FName("Alpha"), MaterialDissolveAlpha);
+	if (ParticleSystem)
+		ParticleEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ParticleSystem,
+			GetActorLocation());
+	if (AudioComponent)
+		AudioComponent->Play(0.f);
+	this->SetActorEnableCollision(false);
+	bDestroyed = true;
+}
+````
+
+Depending on the target alpha-value, more or less of the texture will be visible. Since I am also
+randomizing the texture's rotation, I am able to instantiate quite a few of these without it
+looking too repetitive.
+
+I decided to make a slightly more ambitious variant while at it. No, I mean it, there was no time
+to get truly fancy with this, so it still *looks* pretty basic.
+
+````cpp
+void ADestructibleObject::SetDynamicMaterial(int i)
+{
+	DynamicMaterials[i] = DestructibleWalls[i]->CreateDynamicMaterialInstance(0);
+	DynamicMaterials[i]->SetScalarParameterValue(FName("Specular"), Specular);
+	DynamicMaterials[i]->SetScalarParameterValue(FName("Roughness"), Roughness);
+	DynamicMaterials[i]->SetVectorParameterValue(FName("BaseColour"), BaseColour);
+	DynamicMaterials[i]->SetScalarParameterValue(FName("EdgeSize"), EdgeSize);
+	DynamicMaterials[i]->SetScalarParameterValue(FName("EdgeIntensity"), EdgeIntensity);
+	DynamicMaterials[i]->SetVectorParameterValue(FName("EdgeColour"), EdgeColour);
+	if (bDestroyed)
+		DynamicMaterials[i]->SetScalarParameterValue(FName("Alpha"), MaterialDissolveAlpha);
+	else
+	{
+		DynamicMaterials[i]->SetTextureParameterValue(FName("DissolveTexture"), DissolveTextures[i]);
+		DynamicMaterials[i]->SetScalarParameterValue(FName("Alpha"), 0.f);
+	}
+	DestructibleWalls[i]->SetMaterial(0, DynamicMaterials[i]);
+}
+````
+
+I was going to create an event handler but the prototype tick-version is still there:
+
+````cpp
+void ADestructibleObject::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (bCooling && DissolveDelay > 0.f)
+	{
+		DissolveDelay -= DeltaTime;
+	}
+	else if (bCooling)
+	{
+		EdgeIntensity -= DeltaTime * EdgeCoolingRate;
+		for (int i = 0; i < 5; i++)
+			SetDynamicMaterial(i);
+		if (EdgeIntensity < 1)
+			bCooling = false;
+	}
+}
+
+void ADestructibleObject::OnHit(A lot of parameters)
+{
+	if (bDestroyed) return;
+
+	HitPoints--;
+	if (HitPoints <= 0)
+	{
+		if (ParticleSystem)
+		{
+			ParticleEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ParticleSystem,
+				GetActorLocation() + ParticleSpawnOffset);
+			ParticleEffect->SetColorParameter(FName("DebrisColour"), BaseColour);
+		}
+		if (AudioComponent)
+			AudioComponent->Play(0.f);
+		this->SetActorEnableCollision(false);
+		bCooling = true;
+		bDestroyed = true;
+	}
+}
+
+````
+
+Writing code is one thing. Implementing it, I find, is more laborious. It took way longer than
+anticipated to populate the scene with these objects and when it was finally done I had precious
+little time to start and finish two remaining and crucial issues: enemies and UI. I decided the
+most important part was enemies and so started writing an AI. I discovered even a poor AI requires
+a lot of testing and progress was slow. When I finally had something that worked more or less as
+intended (but still required a LOT of tweaking) I shelved it until later.
+
+````cpp
+void AEnemyFlyboy::EvaluateState()
+{
+	if (CurrentState == EState::S_AvoidCollision) return;
+	if (Health <= 5)
+		CurrentState = EState::S_Retreating;
+	
+	if (TailedByPlayer())
+	{
+		switch (CurrentState)
+		{
+			case EState::S_Patrolling:
+				if (DistanceToTargetSq(PlayerLocation) < Sq(InterceptDistance))
+				{
+					CurrentState = EState::S_GainAltitude;
+					PingInterval = PingIntervalIntercept;
+					GainAltBehaviour();
+				}
+				else
+					PatrolBehaviour();
+				break;
+			case EState::S_Intercepting:
+				if (DistanceToTargetSq(PlayerLocation) > Sq(InterceptDistance))
+				{
+					CurrentState = EState::S_Patrolling;
+					PingInterval = PingIntervalPatrol;
+					PatrolBehaviour();
+				}
+				else if (DistanceToTargetSq(PlayerLocation) < Sq(AttackDistance))
+				{
+					CurrentState = EState::S_Evading;
+					PingInterval = PingIntervalAttack;
+					EvasiveBehaviour();
+				}
+				else
+				{
+					CurrentState = EState::S_GainAltitude;
+					GainAltBehaviour();
+				}
+				break;
+			case EState::S_Attacking:
+				if (DistanceToTargetSq(PlayerLocation) > Sq(AttackDistance))
+				{
+					CurrentState = EState::S_GainAltitude;
+					PingInterval = PingIntervalIntercept;
+					GainAltBehaviour();
+				}
+				else
+				{
+					CurrentState = EState::S_Evading;
+					EvasiveBehaviour();
+				}
+				break;
+			case EState::S_GainAltitude:
+				if (DistanceToTargetSq(PlayerLocation) > Sq(InterceptDistance))
+				{
+					CurrentState = EState::S_Patrolling;
+					PingInterval = PingIntervalPatrol;
+					PatrolBehaviour();
+				}
+				else if (DistanceToTargetSq(PlayerLocation) < Sq(AttackDistance))
+				{
+					CurrentState = EState::S_Evading;
+					PingInterval = PingIntervalAttack;
+					EvasiveBehaviour();
+				}
+				else
+					GainAltBehaviour();
+				break;
+			case EState::S_Evading:
+				if (DistanceToTargetSq(PlayerLocation) > Sq(AttackDistance))
+				{
+					CurrentState = EState::S_GainAltitude;
+					PingInterval = PingIntervalIntercept;
+					GainAltBehaviour();
+				}
+				break;
+			case EState::S_Retreating:
+				if (DistanceToTargetSq(PlayerLocation) < Sq(AttackDistance))
+				{
+					CurrentState = EState::S_Evading;
+					PingInterval = PingIntervalAttack;
+					EvasiveBehaviour();
+				}
+				else
+					RetreatBehaviour();
+				break;
+			default:
+				break;
+		}
+
+		// You get the idea...
+````
+
+In UE, there are a lot of finished functions for AI that are obviously far superior to this. The
+point was to write my own code, however short on time I was. For what it's worth, I consider this
+alright if taking into account that it was my first enemy AI and that I only had a week to cobble
+the whole enemy class together.
+
+Last, it was time to add a little UI. There are countless tutorials on creating widgets with BP,
+of course, but I knew my Blueprint-skills were barely extant by now and so I spent a day learning
+Slate. That was roughly enough for me to realise I wasn't going to make it and so I pivoted to
+creating it in C++ instead. I had two days, frantically learning how to, and then, of course, it
+took about half an hour to write my two UI-classes.
+
+````cpp
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Components/TextBlock.h"
+#include "Components/Image.h"
+#include "Blueprint/UserWidget.h"
+#include "CrosshairWidget.generated.h"
+
+
+UCLASS(ABSTRACT)
+class ARCADEFLIGHTSIM_API UCrosshairWidget : public UUserWidget
+{
+	GENERATED_BODY()
+
+protected:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget)) UImage* CrosshairImage;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget)) UTextBlock* ThrustText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget)) UTextBlock* SpeedText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget)) UTextBlock* HealthText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget)) UTextBlock* AltitudeText;
+
+public:
+	void SetThrustValue(FText NewValue);
+	void SetSpeedValue(FText NewValue);
+	void SetHealthValue(FText NewValue);
+	void SetAltitudeValue(FText NewValue);
+};
+
+#include "CrosshairWidget.h"
+#include <Kismet/GameplayStatics.h>
+#include "Engine/World.h"
+
+
+void UCrosshairWidget::SetThrustValue(FText NewValue)
+{
+	ThrustText->SetText(NewValue);
+}
+
+void UCrosshairWidget::SetSpeedValue(FText NewValue)
+{
+	SpeedText->SetText(NewValue);
+}
+
+void UCrosshairWidget::SetHealthValue(FText NewValue)
+{
+	HealthText->SetText(NewValue);
+}
+
+void UCrosshairWidget::SetAltitudeValue(FText NewValue)
+{
+	AltitudeText->SetText(NewValue);
+}
+````
+
+Of course, the code for a widget is perhaps a tenth of the work required to make it, at least
+straightforward ones like mine.
+
+No game project plan survives contact with reality. I made far too grandiose plans for this
+project and came out of it feeling like I had just fallen on my face. It does still look like I
+got too little done for 8 weeks. Considering I only managed to spend 5 weeks, however, it looks
+considerably better. At least that's what I tell myself!
