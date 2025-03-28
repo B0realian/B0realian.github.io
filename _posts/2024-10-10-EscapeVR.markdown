@@ -153,7 +153,7 @@ themselves and unveil the real planets. While the code for this is significantly
 that for the lions (each snapping point must still accept any key, or the player will know it
 wasn't the correct one, meaning I am checking against ALL keys every time one is snapped in place),
 it becomes much simpler and, crucially, since the code is only executed on input from the player
-the cost is irrelevant.
+the cost is (mostly) irrelevant.
   
 ````cs
 public void AddedPlanet()   // Function is called when a key is snapped to an orbit
