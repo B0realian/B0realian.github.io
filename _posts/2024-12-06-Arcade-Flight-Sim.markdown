@@ -24,7 +24,11 @@ bitter moans of an otherwise enthusiastic programmer, you know how to contact me
 So, a natural fit for my combined goals was a flight simulator! I've loved flight sims since
 playing so many of them on my Amiga 500. I marvelled at the performance of F29 Retaliator which
 was written entirely in Assembler, captivated by the story and progression in Wing Commander
-(the Amiga version), and by the gameplay in Knights of the Sky.
+(the Amiga version), and by the gameplay in Knights of the Sky. To temper your expectations
+straight off the bat, I should add that this ended up being more of a proof of concept than a
+proper game.
+
+![The proof is in the pudding.](img/portfolio/ArcadeFlight/AFS_kill.gif "Who needs Bruckheimer?")
 
 First off, I wrote player movement more or less how I pictured I wanted it. I was going to add
 raw input at a later stage and figured I'd have to modify the feel then. The code snippet below
@@ -153,7 +157,9 @@ void ADestructibleObjectSimple::OnHit(Blah blah)
 
 Depending on the target alpha-value, more or less of the texture will be visible. Since I am also
 randomizing the texture's rotation, I am able to instantiate quite a few of these without it
-looking too repetitive.
+looking too repetitive, even though I just used the first noise texture I found as alpha mask.
+
+![For all the window haters](img/portfolio/ArcadeFlight/AFS_destruction.gif "Saving on window cleaning.")
 
 I decided to make a slightly more ambitious variant while at it. No, I mean it, there was no time
 to get truly fancy with this, so it still *looks* pretty basic.
@@ -222,6 +228,14 @@ void ADestructibleObject::OnHit(A lot of parameters)
 }
 
 ````
+
+So, the main principle is the same: use particle effect (an explosion with flying debris in this
+case) to hide the change of alpha. This time I also added edge colour to produce a glowing ember
+effect that wanes with time.
+
+![First: explosion!](img/portfolio/ArcadeFlight/AFS_explode1.png "KA-BOOM!")
+![Second: Fire & smoke.](img/portfolio/ArcadeFlight/AFS_explode2.png "Joke.")
+![Third: Charred remains.](img/portfolio/ArcadeFlight/AFS_explode3.png "Another joke.")
 
 Writing code is one thing. Implementing it, I find, is more laborious. It took way longer than
 anticipated to populate the scene with these objects and when it was finally done I had precious
@@ -329,6 +343,8 @@ point was to write my own code, however short on time I was. For what it's worth
 alright if taking into account that it was my first enemy AI and that I only had a week to cobble
 the whole enemy class together.
 
+![Stupid AI!](img/portfolio/ArcadeFlight/AFS_AI.gif "Only way to win is to make stupid AI, right?")
+
 Last, it was time to add a little UI. There are countless tutorials on creating widgets with BP,
 of course, but I knew my Blueprint-skills were barely extant by now and so I spent a day learning
 Slate. That was roughly enough for me to realise I wasn't going to make it and so I pivoted to
@@ -397,3 +413,5 @@ No game project plan survives contact with reality. I made far too grandiose pla
 project and came out of it feeling like I had just fallen on my face. It does still look like I
 got too little done for 8 weeks. Considering I only managed to spend 5 weeks, however, it looks
 considerably better. At least that's what I tell myself!
+
+![Is it a bird? Is it a plane? Oh.](img/portfolio/ArcadeFlight/AFS_flying.gif "This is me going from workplace to workplace applying for a job.")
