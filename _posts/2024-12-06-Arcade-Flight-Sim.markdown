@@ -242,7 +242,8 @@ anticipated to populate the scene with these objects and when it was finally don
 little time to start and finish two remaining and crucial issues: enemies and UI. I decided the
 most important part was enemies and so started writing an AI. I discovered even a poor AI requires
 a lot of testing and progress was slow. When I finally had something that worked more or less as
-intended (but still required a LOT of tweaking) I shelved it until later.
+intended (but still required a LOT of tweaking) I shelved it until later. Of course, meaning I
+never had the time to finish it.
 
 ````cpp
 void AEnemyFlyboy::EvaluateState()
@@ -341,7 +342,9 @@ void AEnemyFlyboy::EvaluateState()
 In UE, there are a lot of finished functions for AI that are obviously far superior to this. The
 point was to write my own code, however short on time I was. For what it's worth, I consider this
 alright if taking into account that it was my first enemy AI and that I only had a week to cobble
-the whole enemy class together.
+the whole enemy class together. As it is, the enemy will detect the player when within a certain
+distance, aim for you and fire, until you get too close at which point the enemy will try to veer
+away. If damaged to the point that it leaves a smoke trail, it will try to avoid combat altogether.
 
 ![Stupid AI!](img/portfolio/ArcadeFlight/AFS_AI.gif "Only way to win is to make stupid AI, right?")
 
