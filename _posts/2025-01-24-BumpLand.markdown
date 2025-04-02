@@ -1,0 +1,75 @@
+---
+layout: default
+modal-id: 7
+date: 2025-01-24
+img: bumpland.png
+alt: image-alt
+project-date: January 2025
+client: Nornware
+category: Tooling
+description: Creating terrain out of hi-res textures
+---
+Having started my internship with Nornware, I was given the task of creating a tool to create
+terrain out of megascans-files. The idea was to load a mesh and be able to take snapshots from
+different angles, saving colour and depth to file to be able to use as terrain for levels.
+
+After spending a couple of weeks improving my standard C++ (I had only programmed C++ within UE
+up to this point) I started to learn the OpenGL API and soon had a prototype for a terrain maker
+up and running. However, I decided to take a shortcut when I realised there was a bumpmap with
+every megascans file, so instead of loading a mesh, I used the bumpmap as heightmap and created
+a mesh. Since the textures in megascans are high resolution, the file was 4K and produced a mesh
+with a whopping 35 million triangles.
+
+While I thought I had been ever so clever, this wasn't what had been asked for. So, I quickly
+abandoned the project and started a new one in which I adhered to the specification exactly.
+
+At any rate, I *did* find and look at an example of using heightmaps but decided to go my own
+route. I also decided to use an average of rgb brightness to decide height, meaning *any*
+texture works quite well.
+
+```cpp
+void Terrabumper::Terraform(const std::vector<unsigned char> &data, int stride)
+{
+	int rowLength = imageWidth * stride;
+	float halfWidth = imageWidth / 2.f;
+	float doubleWidth = imageWidth * 2.f;
+	int x = 0;
+	int y = 0;
+	int z = 0;
+	vertices.reserve(imageWidth * imageHeight * sizeof(float) * 3);
+	vertexIndex.reserve((imageWidth - 1) * (imageHeight - 1) * 6 * sizeof(unsigned int));
+
+	for (int i = 0; i < (rowLength * imageHeight); i += rowLength)
+	{
+		for (int z = 0; z < rowLength; z += stride)
+		{
+			float average = ((float)data[z + i] + (float)data[z + i + 1] + (float)data[z + i + 2]) / 3;
+			vertices.push_back((x - halfWidth) / imageWidth);
+			vertices.push_back(average * heightScale);
+			vertices.push_back((y - halfWidth) / imageWidth);
+			x++;
+		}
+		x = 0;
+		y++;
+	}
+
+	for (int i = 0; i < (imageHeight - 1); i++)
+	{
+		for (int j = 0; j < (imageWidth - 1); j++)
+		{
+			vertexIndex.push_back(j + (i * imageWidth));
+			vertexIndex.push_back(j + 1 + (i * imageWidth));
+			vertexIndex.push_back(j + imageWidth + (i * imageWidth));
+			vertexIndex.push_back(j + 1 + (i * imageWidth));
+			vertexIndex.push_back(j + imageWidth + (i * imageWidth));
+			vertexIndex.push_back(j + imageWidth + 1 + (i * imageWidth));
+		}
+	}
+	triangles = vertexIndex.size() / 3;
+}
+```
+
+I should perhaps add that I wrote the shader to make the mesh brighter the greater its height.
+
+![Picture of health](img/portfolio/BumpLand/teddy_sm.png "Haa, haa, haa, haa, stayin' Teddy!")
+![Paging Dr. Bear](img/portfolio/BumpLand/BL_teddy.gif "More huggable than ever!")
