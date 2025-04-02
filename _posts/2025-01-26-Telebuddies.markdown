@@ -114,5 +114,5 @@ UFUNCTION(BlueprintImplementableEvent) void ToggleFans();
 Marking the functions as BP implementable meant we could add them to the Event Graph of the BP,
 thus running both script and code at the same time.
 
-The game is currently available for download on
+The game is currently available for download on  
 https://globalgamejam.org/games/2025/telebuddies-0-1
