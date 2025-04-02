@@ -234,13 +234,13 @@ case) to hide the change of alpha. This time I also added edge colour to produce
 effect that wanes with time.
 
 ![First: explosion!](img/portfolio/ArcadeFlight/AFS_explode1.png "KA-BOOM!")
-![Second: Fire & smoke.](img/portfolio/ArcadeFlight/AFS_explode2.png "Joke.")
-![Third: Charred remains.](img/portfolio/ArcadeFlight/AFS_explode3.png "Another joke.")
+![Second: Fire & smoke.](img/portfolio/ArcadeFlight/AFS_explode2.png "Burning down the house!")
+![Third: Charred remains.](img/portfolio/ArcadeFlight/AFS_explode3.png "Looks well done to me.")
 
 Writing code is one thing. Implementing it, I find, is more laborious. It took way longer than
 anticipated to populate the scene with these objects and when it was finally done I had precious
 little time to start and finish two remaining and crucial issues: enemies and UI. I decided the
-most important part was enemies and so started writing an AI. I discovered even a poor AI requires
+most important part was enemies and so started writing an AI. I discovered even a simple AI requires
 a lot of testing and progress was slow. When I finally had something that worked more or less as
 intended (but still required a LOT of tweaking) I shelved it until later. Of course, meaning I
 never had the time to finish it.
