@@ -27,7 +27,7 @@ where you shoot bubbles to which you can teleport.
 Since I was more experienced with Niagara, I ended up doing most of the FX (not that there was much
 of it), such as the air flow effect from the fans.
 
-![Bubbles need air](img/portfolio/TeleBuddies/TB_air.gif "I guess this is fan art.")
+![Bubbles need air](img/portfolio/TeleBuddies/TB_fan.gif "I guess this is fan art.")
 ![Captured air](img/portfolio/TeleBuddies/TB_airflow.png "The air is still. Get it?")
 
 I started off trying to use sprites, which of course did not work at all. It is probably obvious
