@@ -272,7 +272,7 @@ else
 	std::cout << "Failed to create array.txt" << std::endl;
 ```
 
-Then all I had to do was copy the text file into an array and write a function that decodes it.
+Then all I had to do was delete the last comma, copy the text file into an array and write a function that decodes it.
 
 ```cpp
 uint8_t* CascadiaData()
