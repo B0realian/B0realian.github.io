@@ -71,5 +71,21 @@ void Terrabumper::Terraform(const std::vector<unsigned char> &data, int stride)
 
 I should perhaps add that I wrote the shader to make the mesh brighter the greater its height.
 
+```cpp
+#version 330 core
+
+in float height;
+uniform float invHS;
+out vec4 frag_color;
+
+void main()
+{
+   float rx = height * invHS;
+   float gx = height * invHS;
+   float bx = height * invHS * 0.5f;
+   frag_color = vec4(rx, gx, bx, 1.f);
+};
+```
+
 ![Picture of health](img/portfolio/BumpLand/teddy_sm.png "Haa, haa, haa, haa, stayin' Teddy!")
 ![Paging Dr. Bear](img/portfolio/BumpLand/BL_teddy.gif "More huggable than ever!")
