@@ -76,7 +76,7 @@ void MoveCamera(float dYaw, float dPitch)
 	model = glm::translate(model, subjectPos);
 	view = glm::lookAt(camPosition, subjectPos, camUp);
 	projection = glm::perspective(glm::radians(45.f), (float)mainWindowWidth /
-							 	(float)mainWindowHeight, 0.1f, 100.f);
+						 	(float)mainWindowHeight, 0.1f, 100.f);
 }
 ```
 
@@ -91,7 +91,7 @@ static void __camera_projection(glm::mat4& model, glm::mat4& view, glm::mat4& pr
 	model = glm::rotate(model, __state.subjectRotation.x * 1.5f, glm::vec3(xRot, 0.f, zRot));
 	
 	view = glm::lookAt(__state.camPosition, __state.subjectPosition + __state.subjectOffset,
-						 __state.camUp);
+				 __state.camUp);
 	
 	const float ASPECT_RATIO = static_cast<float>(__state.mainWindowHeight) /
 					 static_cast<float>(__state.mainWindowWidth);
@@ -133,13 +133,13 @@ void GetCascadiaMap(std::map<char, BMuv> &bmuv)
 			char c = char(asciiValue);
 			BMuv tempbmuv;
 			tempbmuv.topLeftUV = { static_cast<float>(j) / tableWidth ,
-							static_cast<float>(i) / tableHeight };
+						static_cast<float>(i) / tableHeight };
 			tempbmuv.topRightUV = { static_cast<float>(j + 1) / tableWidth ,
-							 static_cast<float>(i) / tableHeight };
+						 static_cast<float>(i) / tableHeight };
 			tempbmuv.bottomLeftUV = { static_cast<float>(j) / tableWidth ,
-								 static_cast<float>(i + 1) / tableHeight };
+						 static_cast<float>(i + 1) / tableHeight };
 			tempbmuv.bottomRightUV = { static_cast<float>(j + 1) / tableWidth ,
-								 static_cast<float>(i + 1) / tableHeight };
+						 static_cast<float>(i + 1) / tableHeight };
 
 			bmuv.insert({ c, tempbmuv });
 			
@@ -255,13 +255,13 @@ if (outfile.is_open())
 	{
 		uint8_t byte = 0;
 		uint8_t mask =	(alpha[i + 7] / 255	<< 0) |
-						(alpha[i + 6] / 255	<< 1) |
-						(alpha[i + 5] / 255	<< 2) |
-						(alpha[i + 4] / 255	<< 3) |
-						(alpha[i + 3] / 255	<< 4) |
-						(alpha[i + 2] / 255	<< 5) |
-						(alpha[i + 1] / 255	<< 6) |
-						(alpha[i]     / 255	<< 7);
+				(alpha[i + 6] / 255	<< 1) |
+				(alpha[i + 5] / 255	<< 2) |
+				(alpha[i + 4] / 255	<< 3) |
+				(alpha[i + 3] / 255	<< 4) |
+				(alpha[i + 2] / 255	<< 5) |
+				(alpha[i + 1] / 255	<< 6) |
+				(alpha[i]     / 255	<< 7);
 		byte = byte | mask;
 		
 		outfile << static_cast<int>(byte) << ", ";
