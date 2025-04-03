@@ -15,14 +15,14 @@ Creating an array of vertices from mesh data is typically straight forward. Howe
 
 ```cpp
 const char b64table[64] = { 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q',
-							'R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h',
-							'i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y',
-							'z','0','1','2','3','4','5','6','7','8','9','+','/' };
+				'R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h',
+				'i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y',
+				'z','0','1','2','3','4','5','6','7','8','9','+','/' };
 
 uint32_t start = static_cast<uint32_t>(uri.find("base64,") + 7);
-uri = uri.substr(start);					// Assuming encoding will always be an octet stream.
+uri = uri.substr(start);				// Assuming encoding will always be an octet stream.
 
-int padding = uri.length() % 4;				// This should not be necessary but is a safeguard. 
+int padding = uri.length() % 4;				// This should not be necessary but is a safeguard.
 if (padding > 0)
 {
 	for (int i = 0; i < padding; i++)
@@ -76,7 +76,7 @@ void MoveCamera(float dYaw, float dPitch)
 	model = glm::translate(model, subjectPos);
 	view = glm::lookAt(camPosition, subjectPos, camUp);
 	projection = glm::perspective(glm::radians(45.f), (float)mainWindowWidth /
-													 	(float)mainWindowHeight, 0.1f, 100.f);
+							 	(float)mainWindowHeight, 0.1f, 100.f);
 }
 ```
 
@@ -94,7 +94,7 @@ static void __camera_projection(glm::mat4& model, glm::mat4& view, glm::mat4& pr
 						 __state.camUp);
 	
 	const float ASPECT_RATIO = static_cast<float>(__state.mainWindowHeight) /
-								 static_cast<float>(__state.mainWindowWidth);
+					 static_cast<float>(__state.mainWindowWidth);
 
 	projection = glm::perspective(glm::radians(45.f), (1.f / ASPECT_RATIO), 0.01f, 100.f);
 }
@@ -113,7 +113,7 @@ Since SBT has no real save functions (that's how Sean Barrett wants it) I wrote 
 
 Now I had a working prototype, run from the command line, that did everything it was supposed to do. However, starting up the program with arguments for files every time you want to load a new one quickly gets tedious, especially when textures are in different folders from the meshes. So it was time to add a couple of features: scanning for mesh files, finding their textures, and displaying the results as text in the editor. Thankfully, std::filesystem turned the file scanning into a doddle. With gltfs, there are file paths in the json and so I could use those to retrieve the texture I wanted. For fbx and obj I just had to assume the texture would be in the same dir as the mesh and that its filename would contain the mesh filename.
 
-Text is a different matter. I read a description of how it is usually done: "Draw a quad for each letter and put a texture featuring the correct letter on it." and I figured that was something I should be able to do. For me, this has been a defining moment in my progress to become a *real* programmer. No tutorials, only this description, and in a moment of clarity I saw a way of accomplishing it. First, I created the texture, taking an embarrassing amount of time to try different fonts in different sizes (in my defence, I didn't know beforehand which ones were monospaced).
+Text is a different matter. I read a description of how it is usually done: "Draw a quad for each letter and put a texture featuring the correct letter on it." and I figured that was something I should be able to do. For me, this has been a defining moment in my progress to become a *real* programmer. No tutorials, only this description, and in a moment of clarity I saw a way of accomplishing it. First, I created the texture, taking an embarrassing amount of time to try different fonts in different sizes (in my defence, I didn't know beforehand which ones were monospaced).  
 
 ![The text starts here](img/portfolio/M2I/bmtxt.png "All the letters a programmer could ever want!")
 
@@ -133,13 +133,13 @@ void GetCascadiaMap(std::map<char, BMuv> &bmuv)
 			char c = char(asciiValue);
 			BMuv tempbmuv;
 			tempbmuv.topLeftUV = { static_cast<float>(j) / tableWidth ,
-									static_cast<float>(i) / tableHeight };
+							static_cast<float>(i) / tableHeight };
 			tempbmuv.topRightUV = { static_cast<float>(j + 1) / tableWidth ,
-									 static_cast<float>(i) / tableHeight };
+							 static_cast<float>(i) / tableHeight };
 			tempbmuv.bottomLeftUV = { static_cast<float>(j) / tableWidth ,
-										 static_cast<float>(i + 1) / tableHeight };
+								 static_cast<float>(i + 1) / tableHeight };
 			tempbmuv.bottomRightUV = { static_cast<float>(j + 1) / tableWidth ,
-										 static_cast<float>(i + 1) / tableHeight };
+								 static_cast<float>(i + 1) / tableHeight };
 
 			bmuv.insert({ c, tempbmuv });
 			
@@ -204,8 +204,8 @@ Finally, a little gratiuitously, I created a macro
 ```cpp
 // Requires textbuffer and textmap to be named as such. Expects a variable as second argument.
 #define WRITE_VAR(text, v, row, colour)	{ glUniform1i(UNIFORM_LINE, row);\
-								snprintf(textbuffer, BUFFER_SIZE, text, v);\
-								textline.WriteLine(textbuffer, textmap, ETextColour:: colour); }
+					snprintf(textbuffer, BUFFER_SIZE, text, v);\
+					textline.WriteLine(textbuffer, textmap, ETextColour:: colour); }
 ```
 
 So that I could create text in the while-loop like this:
@@ -214,6 +214,83 @@ So that I could create text in the while-loop like this:
 WRITE_VAR("Far render: %f", __state.orthoFar, 0, RED)
 ```
 
-And it all just worked.
+And it all just worked.  
 
 ![Using m2i](img/portfolio/M2I/M2I_usage.gif "A little more to the left! Look sexy!")
+
+There was just one more thing. I have mentioned a couple of times now how I wanted the program to be portable and without dependencies and yet now I had texture with characters to be able to write text in the editor. So, obviously I was going to inline it into an array! Before I had time to do it, Johno, discovered the same thing and approved of my plan.
+
+The good thing about text is that you only really need the alpha and you only need it as on or off, meaning I could reduce each pixel to a single bit. I wrote a program to load the texture and encode 8 pixels per byte before printing in the form of an array to a text file. Actually, I wrote a duplicate in binary form to a separate file for debugging purposes as well.
+
+```cpp
+std::vector<uint8_t> alpha;
+for (int32_t i = 3; i < image_size; i += 4)
+{
+	alpha.push_back(image_data[i]);
+}
+std::ofstream testfile(".\\bitslayout.txt");
+if (testfile.is_open())
+{
+	int32_t tick = 1;
+	for (int32_t i = 0; i < alpha.size(); i++)
+	{
+		testfile << static_cast<int>(alpha[i] / 255);
+		if (tick == 8)
+		{
+			testfile << ", ";
+			tick = 0;
+		}
+		tick++;
+	}
+	testfile.close();
+}
+else
+	std::cout << "Failed to create bitslayout.txt" << std::endl;
+
+std::ofstream outfile(".\\array.txt");
+if (outfile.is_open())
+{
+	int tick = 1;
+	for (int32_t i = 0; i < alpha.size(); i += 8)
+	{
+		uint8_t byte = 0;
+		uint8_t mask =	(alpha[i + 7] / 255	<< 0) |
+						(alpha[i + 6] / 255	<< 1) |
+						(alpha[i + 5] / 255	<< 2) |
+						(alpha[i + 4] / 255	<< 3) |
+						(alpha[i + 3] / 255	<< 4) |
+						(alpha[i + 2] / 255	<< 5) |
+						(alpha[i + 1] / 255	<< 6) |
+						(alpha[i]     / 255	<< 7);
+		byte = byte | mask;
+		
+		outfile << static_cast<int>(byte) << ", ";
+	}
+	outfile.close();
+}
+else
+	std::cout << "Failed to create array.txt" << std::endl;
+```
+
+Then all I had to do was copy the text file into an array and write a function that decodes it.
+
+```cpp
+uint8_t* CascadiaData()
+{
+	for (int32_t i = 0; i < cascadia_elements; i++)
+	{
+		for (int32_t a = 0; a < 8; a++)
+		{
+			for (int32_t rgb = 0; rgb < 3; rgb++)
+				textdata[(i * 32) + (a * 4) + rgb] = 255;
+
+			uint8_t value = cascadiadata[i] << a;
+			textdata[(i * 32) + (a * 4) + 3] = 255 * (value >> 7);
+		}
+	}
+
+	return &textdata[0];
+}
+```
+
+This project really made me feel like low level programming is all about structuring your for-loops but if that is so, then that is ok.
