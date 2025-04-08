@@ -17,7 +17,7 @@ stressful for him I suppose.
 
 Something that turned out to later cause half an hour of panic was that my class mates wanted to
 use blueprints while I felt much more comfortable with C++. Naturally, I told them it was no
-problem since everything is eventually turned into a BP-class anyway.
+problem since everything is eventually turned into a BP-class anyway. That promise was what made me stressed, I suppose, since naturally we discovered it *could* be a problem.
 
 This year's theme was "Bubbles" and while brainstorming I mentioned that a bubble can refer to a
 self-contained universe and what if we could base the game on a mechanic that lets the player
