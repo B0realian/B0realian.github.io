@@ -3,7 +3,7 @@ layout: default
 modal-id: 9
 date: 2025-03-31
 img: m2i.png
-alt: image-alt
+alt: m2i_alt.png
 project-date: March 2025
 client: Nornware
 category: Tooling
