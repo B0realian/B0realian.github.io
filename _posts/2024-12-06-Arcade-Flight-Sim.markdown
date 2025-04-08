@@ -3,7 +3,7 @@ layout: default
 modal-id: 6
 date: 2024-12-06
 img: arcadeflight.png
-alt: arcadeflight_alt.png
+alt: arcadeflight_altsm.png
 project-date: December 2024
 client: School Project
 category: Games Development
