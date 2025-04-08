@@ -3,7 +3,7 @@ layout: default
 modal-id: 7
 date: 2025-01-24
 img: bumpland.png
-alt: image-alt
+alt: bumpland_alt.png
 project-date: January 2025
 client: Nornware
 category: Tooling

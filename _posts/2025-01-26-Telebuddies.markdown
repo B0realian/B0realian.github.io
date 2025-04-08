@@ -3,7 +3,7 @@ layout: default
 modal-id: 8
 date: 2025-01-26
 img: telebuddies.png
-alt: image-alt
+alt: telebuddies_alt.png
 project-date: January 2025
 client: Game Jam
 category: Games Development

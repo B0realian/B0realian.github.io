@@ -3,7 +3,7 @@ layout: default
 modal-id: 3
 date: 2024-04-12
 img: jumpbot.png
-alt: image-alt
+alt: jumpbot_alt.png
 project-date: April 2024
 client: School Project
 category: Games Development
