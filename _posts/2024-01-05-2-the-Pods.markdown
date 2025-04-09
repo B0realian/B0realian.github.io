@@ -3,7 +3,7 @@ layout: default
 modal-id: 1
 date: 2024-01-05
 img: pods.png
-alt: pods_alt.png
+alt: pods_altsm.png
 project-date: January 2024
 client: School Project
 category: Games Development

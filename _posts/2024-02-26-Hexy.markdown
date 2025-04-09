@@ -3,7 +3,7 @@ layout: default
 modal-id: 2
 date: 2024-03-08
 img: hexy.png
-alt: hexy_alt.png
+alt: hexy_altsm.png
 project-date: March 2024
 client: School Project
 category: Games Development

@@ -3,7 +3,7 @@ layout: default
 modal-id: 4
 date: 2024-06-07
 img: hellracer.png
-alt: hellracer_alt.png
+alt: hellracer_altsm.png
 project-date: June 2024
 client: School Project
 category: Games Development

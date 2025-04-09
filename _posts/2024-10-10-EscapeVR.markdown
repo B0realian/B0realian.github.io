@@ -3,7 +3,7 @@ layout: default
 modal-id: 5
 date: 2024-10-10
 img: escapevr.png
-alt: escapevr_alt.png
+alt: escapevr_altsm.png
 project-date: October 2024
 client: School Project
 category: Games Development
