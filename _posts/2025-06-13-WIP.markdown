@@ -2,7 +2,7 @@
 layout: default
 modal-id: 10
 date: 2025-06-13
-img: WIP_light.gif
+img: WIP_altsm.png
 alt: WIP_altsm.png
 project-date: June 2025
 client: School Project
@@ -19,3 +19,6 @@ Light coming from the left:
 
 Harsh shadows with a small amount of peter panning:
 ![Differently shiny breastplate](img/portfolio/WIP/WIP_shadow "Fear of the pixelated dark.")
+
+Gif:
+![Grainy](img/portfolio/WIP/WIP_light.gif "Looks like the lamp is malfunctioning again.")
