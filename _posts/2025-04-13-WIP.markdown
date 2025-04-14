@@ -1,7 +1,7 @@
 ---
 layout: default
 modal-id: 10
-date: 2025-06-13
+date: 2025-04-13
 img: WIP_altsm.png
 alt: WIP_altsm.png
 project-date: June 2025
@@ -12,13 +12,17 @@ description: Check back for more later!
 So, Nornware was happy with the Mesh-to-Image program and with two months left of my internship I was basically allowed to pick my own project, with the goal of trying to pass myself off as employable. At the time of writing this, I have only had one week of development, so it is still early days. But what I *have* done is to create a Blinn-Phong model of lighting with shadowmapping for realtime shadows. The shadow edges are still sharp and pixelated and since I'm guessing it would take me at least another week to learn how to do PCSS, they might stay this way.
 
 Light straight on:
+
 ![Shiny breastplate](img/portfolio/WIP/WIP_light1.png "Is that a light on your chest or are you just happy to see me?")
 
 Light coming from the left:
-![Differently shiny breastplate](img/portfolio/WIP/WIP_light2 "It'll never get a tan in this light.")
+
+![Differently shiny breastplate](img/portfolio/WIP/WIP_light2.png "It'll never get a tan in this light.")
 
 Harsh shadows with a small amount of peter panning:
-![Differently shiny breastplate](img/portfolio/WIP/WIP_shadow "Fear of the pixelated dark.")
+
+![Differently shiny breastplate](img/portfolio/WIP/WIP_shadow.png "Fear of the pixelated dark.")
 
 Gif:
+
 ![Grainy](img/portfolio/WIP/WIP_light.gif "Looks like the lamp is malfunctioning again.")
