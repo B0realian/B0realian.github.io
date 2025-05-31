@@ -26,3 +26,22 @@ Harsh shadows with a small amount of peter panning:
 Gif:
 
 ![Grainy](img/portfolio/WIP/WIP_light.gif "Looks like the lamp is malfunctioning again.")
+
+UPDATE:
+
+![Similar to scene prior the update](img/portfolio/WIP/WIP_updated.png "You can't see it but maybe you can smell the difference?")
+
+So, it doesn't actually look like there's any difference from before, in fact: it looks worse from before! But everything has been refactored, partly because I wanted to restructure a few things and partly because there's a lot to learn from doing the same thing differently. I have done a lot of work on my gltf-loader and the models are now gltf-files as opposed to wavefront objects in the previous iteration. I also went more low-level with uniform handling. Before I used the same technique that I see examples of wherever OpenGL is displayed: all uniforms are stored in a map. However, this means that for every uniform you add one function call and an iteration of string comparison with your map. I'm running a very simple scene, requiring only 8 uniforms whenever I change shaders and 5 uniforms for every draw call (not counting the shadow pass) but this still adds up, even if I continue to keep it super simple and only use two different shaders (static and animated) and run a hundred draw calls. I'm sure a lot of magic has gone into std::map but 516 iterations every frame *is* going to take a toll. And what about if you want nicer visuals? Even smaller games might have up to 20-30 shaders per scene and over a thousand draw calls. Consider too, that the more uniforms you have, the longer it will take to iterate through the map.
+
+Instead, I store the uniform indexes as const uints. It becomes an ugly large block of code just after shader compilation but that's alright. I have inlined all my shaders into a header file as well, instead of loading external text files. That has nothing to do with performance, obviously, but a wish to minimize dependencies as well as to avoid clutter in the file structure.
+
+I got a new model from Mixamo and that is the reason shadows look way worse now: the geometry around the chest area causes a lot of self shadowing. I upped the bias to combat this until peter panning is evident and self shadowing is still visible, which is what can be seen here:
+
+![Grainy](img/portfolio/WIP/WIP_self_shadow.gif "Is that a shadow on your chest or are you just happy to see me?")
+
+![Silly heels](img/portfolio/WIP/WIP_gltf_panning.png "Fighting in heels would have been so much harder if they actually made contact with the ground!")
+
+The self shadowing can be solved with a number of different techniques (sloped bias might be enough) but my current priority is elsewhere.
+
+Apart from all this, you might be wondering about the invisible mesh. That has been a real time sink and there's literally nothing to show for it yet but hopefully there will be soon. A lot of time and energy has been spent on my upcoming graduation as well to be honest. But that's an excuse for another time!
+
