@@ -40,16 +40,16 @@ footer:
 
 # Social networks usernames (many more available: google-plus, flickr, dribbble, pinterest, instagram, tumblr, linkedin, etc.)
 social:
-  - title: twitter
-    url: http://twitter.com/jekyllrb
-  - title: discord
-    url: https://discordapp.com/users/1143216456746684488/
-  - title: stack-overflow
-    url: http://stackoverflow.com/questions/tagged/jekyll
-  - title: linkedin
-    url: https://www.linkedin.com/in/philip-von-schwerin-735567369
   - title: github
     url: http://github.com/B0realian
+  - title: discord
+    url: https://discordapp.com/users/1143216456746684488/
+  - title: linkedin
+    url: https://www.linkedin.com/in/philip-von-schwerin-735567369
+  - title: stack-overflow
+    url: http://stackoverflow.com/questions/tagged/jekyll
+  - title: twitter
+    url: http://twitter.com/jekyllrb
 
 # Postal address (add as many lines as necessary)
 address:
