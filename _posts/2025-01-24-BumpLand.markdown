@@ -30,42 +30,42 @@ texture works quite well.
 ```cpp
 void Terrabumper::Terraform(const std::vector<unsigned char> &data, int stride)
 {
-	int rowLength = imageWidth * stride;
-	float halfWidth = imageWidth / 2.f;
-	float doubleWidth = imageWidth * 2.f;
-	int x = 0;
-	int y = 0;
-	int z = 0;
-	vertices.reserve(imageWidth * imageHeight * sizeof(float) * 3);
-	vertexIndex.reserve((imageWidth - 1) * (imageHeight - 1) * 6 * sizeof(unsigned int));
+  int rowLength = imageWidth * stride;
+  float halfWidth = imageWidth / 2.f;
+  float doubleWidth = imageWidth * 2.f;
+  int x = 0;
+  int y = 0;
+  int z = 0;
+  vertices.reserve(imageWidth * imageHeight * sizeof(float) * 3);
+  vertexIndex.reserve((imageWidth - 1) * (imageHeight - 1) * 6 * sizeof(unsigned int));
 
-	for (int i = 0; i < (rowLength * imageHeight); i += rowLength)
-	{
-		for (int z = 0; z < rowLength; z += stride)
-		{
-			float average = ((float)data[z + i] + (float)data[z + i + 1] + (float)data[z + i + 2]) / 3;
-			vertices.push_back((x - halfWidth) / imageWidth);
-			vertices.push_back(average * heightScale);
-			vertices.push_back((y - halfWidth) / imageWidth);
-			x++;
-		}
-		x = 0;
-		y++;
-	}
+  for (int i = 0; i < (rowLength * imageHeight); i += rowLength)
+  {
+    for (int z = 0; z < rowLength; z += stride)
+	 {
+	   float average = ((float)data[z + i] + (float)data[z + i + 1] + (float)data[z + i + 2]) / 3;
+		vertices.push_back((x - halfWidth) / imageWidth);
+		vertices.push_back(average * heightScale);
+		vertices.push_back((y - halfWidth) / imageWidth);
+		x++;
+	 }
+	 x = 0;
+	 y++;
+  }
 
-	for (int i = 0; i < (imageHeight - 1); i++)
-	{
-		for (int j = 0; j < (imageWidth - 1); j++)
-		{
-			vertexIndex.push_back(j + (i * imageWidth));
-			vertexIndex.push_back(j + 1 + (i * imageWidth));
-			vertexIndex.push_back(j + imageWidth + (i * imageWidth));
-			vertexIndex.push_back(j + 1 + (i * imageWidth));
-			vertexIndex.push_back(j + imageWidth + (i * imageWidth));
-			vertexIndex.push_back(j + imageWidth + 1 + (i * imageWidth));
-		}
-	}
-	triangles = vertexIndex.size() / 3;
+  for (int i = 0; i < (imageHeight - 1); i++)
+  {
+    for (int j = 0; j < (imageWidth - 1); j++)
+    {
+      vertexIndex.push_back(j + (i * imageWidth));
+      vertexIndex.push_back(j + 1 + (i * imageWidth));
+	   vertexIndex.push_back(j + imageWidth + (i * imageWidth));
+	   vertexIndex.push_back(j + 1 + (i * imageWidth));
+	   vertexIndex.push_back(j + imageWidth + (i * imageWidth));
+      vertexIndex.push_back(j + imageWidth + 1 + (i * imageWidth));
+	  }
+  }
+  triangles = vertexIndex.size() / 3;
 }
 ```
 
