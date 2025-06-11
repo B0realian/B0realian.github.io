@@ -4,7 +4,7 @@
     	<meta charset="utf-8">
     	<link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet'>
     	<link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet'>
-    	<title>Secrets</title>
+    	<title>My lovely internship</title>
     	<style>
     		html, body {
 	    		background-color: #030c1b;
@@ -42,11 +42,17 @@
 			<p><br>Most of you in GP23 know Nornware from the bonus lectures we received on shaders at the start of our second year. I know a lot of us felt like it was a bit too much to take in and understand at that point but I'm sure everyone else was equally awed with how much can be done visually by just fiddling with numbers in shaders. Naturally, my instinct was to think that this is what I should add to my toolkit! What followed was not quite what I had expected however.
 			<br><br>
 			Nornware is a single developer - Johannes Norneby - who was lead on Massive's first title Ground Control. He has also been at DiCE and consulted numerous other studios, as well as evaluated a John Romero project for investors. He has applied OOP about as far as it goes and embraced low level programming as a result. After seven years in early access, his game Space Beast Terror Fright received its final release a couple of years ago, built by him from the ground up.
-			<br></p>
+			<br><br></p>
 			<img src="sbtf.png" alt="Pic went Oops!" style="width: 600px; height: 338px;">
-			<p><br>So, what could I help one of the most senior developers in the country with? I think Johannes was a little dubious about my potential but he hid it well and asked me to create a terrain making tool from scratch, possibly using OpenGL as a renderer, adding that if I failed miserably that was fine as long as I learnt something.
-			<br></p>
-			
+			<p><br><br>So, what could I help one of the most senior developers in the country with? I think Johannes was a little dubious about my potential but he hid it well and asked me to create a terrain making tool from scratch, possibly using OpenGL as a renderer, adding that if I failed miserably that was fine as long as I learnt something. After spending a couple of weeks improving my standard C++ (I had only programmed C++ within UE up to this point) I started to learn the OpenGL API and soon had a prototype for a terrain maker up and running. However, I decided to take a shortcut when I realised there was a bumpmap with every megascans file, so instead of loading a mesh, I used the bumpmap as heightmap and created a mesh. Since the textures in megascans are high resolution, the file was 4K and produced a mesh with a whopping 35 million triangles.
+			<br><br>
+			While I thought I had been ever so clever, this wasn't what Johannes had asked for and it turned out to have no use for him. So, I quickly abandoned the project and started a new one in which I adhered to the specification exactly. At any rate, I <i>did</i> find and look at an example of using heightmaps but decided to go my own route. I also decided to use an average of rgb brightness to decide height, meaning <i>any</i> texture works quite well.
+			<br><br></p>
+			<img src="terraform.png" alt="Pic went Oops!" style="width: 700px; height: 600px;">
+			<p><br>Program in action!
+			<br><br>
+			<img src="img/portfolio/BumpLand/teddy_sm.png" alt="Pic went Oops!" style="width: 512px; height: 512px;">
+			<img src="img/portfolio/BumpLand/BL_teddy.gif" alt="Pic went Oops!" style="width: 426px; height: 240px;">
 		</div>
 	</body>
 </html> 

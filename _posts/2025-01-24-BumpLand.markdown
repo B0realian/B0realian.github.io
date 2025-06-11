@@ -44,10 +44,10 @@ void Terrabumper::Terraform(const std::vector<unsigned char> &data, int stride)
     for (int z = 0; z < rowLength; z += stride)
 	 {
 	   float average = ((float)data[z + i] + (float)data[z + i + 1] + (float)data[z + i + 2]) / 3;
-		vertices.push_back((x - halfWidth) / imageWidth);
-		vertices.push_back(average * heightScale);
-		vertices.push_back((y - halfWidth) / imageWidth);
-		x++;
+		 vertices.push_back((x - halfWidth) / imageWidth);
+		 vertices.push_back(average * heightScale);
+		 vertices.push_back((y - halfWidth) / imageWidth);
+		 x++;
 	 }
 	 x = 0;
 	 y++;
@@ -59,9 +59,9 @@ void Terrabumper::Terraform(const std::vector<unsigned char> &data, int stride)
     {
       vertexIndex.push_back(j + (i * imageWidth));
       vertexIndex.push_back(j + 1 + (i * imageWidth));
-	   vertexIndex.push_back(j + imageWidth + (i * imageWidth));
-	   vertexIndex.push_back(j + 1 + (i * imageWidth));
-	   vertexIndex.push_back(j + imageWidth + (i * imageWidth));
+	    vertexIndex.push_back(j + imageWidth + (i * imageWidth));
+	    vertexIndex.push_back(j + 1 + (i * imageWidth));
+	    vertexIndex.push_back(j + imageWidth + (i * imageWidth));
       vertexIndex.push_back(j + imageWidth + 1 + (i * imageWidth));
 	  }
   }
