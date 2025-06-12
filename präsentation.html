@@ -61,6 +61,7 @@
 			<p><br>Hands up if you have no idea how to write code for taking and saving screenshots. I had no idea myself. But OpenGL provides! So capturing images turned out to be the simplest part of the process:
 			<br><br>
 			glReadPixels(0, 0, in_width, in_height, GL_RGB, GL_FLOAT, capturedColor);
+			<br>
 			glReadPixels(0, 0, in_width, in_height, GL_DEPTH_COMPONENT, GL_FLOAT, capturedDepth);
 			<br><br>
 			STB does not have a save feature so I was left with writing my own files. For colour, I had already written a .tga loader and saver so implementing that was easy. Trouble was saving 16-bit grayscale, which is not supported by most colour-formats. Enter Portable GrayMap! It saves raw in text so file size is ludicrous, but it works and saved me the trouble of trying to understand .tiff.
