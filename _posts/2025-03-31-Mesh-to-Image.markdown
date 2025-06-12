@@ -146,6 +146,7 @@ void GetCascadiaMap(std::map<char, BMuv> &bmuv)
 			asciiValue++;
 		}
 	}
+}
 ```
 
 which in turn was used to map the correct letters to the quads:
