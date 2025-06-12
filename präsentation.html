@@ -20,7 +20,7 @@
 	    	}
 
 	    	.std {
-	    		height: 300%;
+	    		height: 500%;
 	    		width: 50%;
 	    		margin: auto;
 	    		background-color: #04122b;
@@ -58,7 +58,42 @@
 			Creating an array of vertices from mesh data is typically straight forward. However, I did groan when I realised that the gltf-format supported data embedded as a base64 encoded string. Incidentally, this is why you should only use .gltfs with embedded data if running webGL (or another web graphics API): load time and performance takes a definite hit from decoding the data. However daunting I initially found the prospect of writing a decoder, I was surprised when my first attempt just worked. Partly, this stemmed from not having copied someone else’s decoder: I had to look up what base64 entailed which detailed some of the necessary steps (such as the base64 table) but otherwise I just wrote what I figured should be how it works.
 			<br><br></p>
 			<img src="base64.png" alt="Pic went Oops!" style="width: 800px; height: 860px;">
-			<p><br>Hands up if you have no idea how to write code for taking and saving screenshots. I had no idea myself.
+			<p><br>Hands up if you have no idea how to write code for taking and saving screenshots. I had no idea myself. But OpenGL provides! So capturing images turned out to be the simplest part of the process:
+			<br><br>
+			glReadPixels(0, 0, in_width, in_height, GL_RGB, GL_FLOAT, capturedColor);
+			glReadPixels(0, 0, in_width, in_height, GL_DEPTH_COMPONENT, GL_FLOAT, capturedDepth);
+			<br><br>
+			STB does not have a save feature so I was left with writing my own files. For colour, I had already written a .tga loader and saver so implementing that was easy. Trouble was saving 16-bit grayscale, which is not supported by most colour-formats. Enter Portable GrayMap! It saves raw in text so file size is ludicrous, but it works and saved me the trouble of trying to understand .tiff.
+			<br><br>
+			Finished! Well, no. The program did everything that was asked for but it <i>was</i> a very clunky user experience. Hence, more time was then spent adding features than it took to create the prototype, which should have come as no surprise. Basically, I needed an interface: text! So a google search gave me
+			<br><br>
+			<i>"In the early days, rendering text involved selecting a font (or create one yourself) you'd like for your application and extracting all relevant characters out of this font to place them within a single large texture. Such a texture, that we call a bitmap font, contains all character symbols we want to use in predefined regions of the texture. These character symbols of the font are known as glyphs. Each glyph has a specific region of texture coordinates associated with them. Whenever you want to render a character, you select the corresponding glyph by rendering this section of the bitmap font to a 2D quad."</i>
+			<br><br>
+			and I was like: I can do that! So I made my own bitmap using a font called Cascadia (you <i>really</i> want a monospaced font for this)
+			<br><br></p>
+			<img src="img/portfolio/M2I/bmtxt.png" alt="Pic went Oops!" style="width: 640px; height: 108px;">
+			<p><br><br>
+			then created a struct for the uv-coordinates and a map (that’s a dictionary for you C# coders out there) with the corresponding chars
+			<br><br></p>
+			<img src="cascadiamap.png" alt="Pic went Oops!" style="width: 711px; height: 490px;">
+			<p><br><br>
+			so that I could reassemble uv coordinates for the vertices in runtime.
+			<br><br></p>
+			<img src="textverts.png" alt="Pic went Oops!" style="width: 594px; height: 834px;">
+			<p><br><br>
+			Et voilá!
+			<br><br></p>
+			<img src="img/portfolio/m2i.png" alt="Pic went Oops!" style="width: 900px; height: 650px;">
+			<p><br><br>
+			But there was one problem: the font imagefile had to accompany the program, i.e. I had created a dependency. Wouldn't it be a lot nicer if I could inline the image? The reason you typically don't is because each pixel is 32 bytes so even small images inflate your program's size a lot. But I was only really interested in whether the pixel's alpha was 1 or 0, meaning I could fit a pixel in a bit, which means my image would be 256 times smaller. So I wrote a small program that fit 8 pixels per byte and wrote each byte cast as an int followed by a comma to a text file. So now I had all the data in the shape of an array and could copy it into my header.
+			<br><br></p>
+			<img src="bits.png" alt="Pic went Oops!" style="width: 517px; height: 417px;">
+			<p><br><br>
+			And this little operation led to what is possibly my proudest moment in Yrgo:
+			<br><br></p>
+			<img src="praise.png" alt="Pic went Oops!" style="width: 443px; height: 124px;">
+			<p><br><br>
+			All in all, it took me about three months to learn and write the two terrain-making programs, where roughly one month was spent on learning the OpenGL basics and writing the first program.
 			<br><br></p>
 		</div>
 	</body>
