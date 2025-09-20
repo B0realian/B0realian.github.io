@@ -1,7 +1,7 @@
 ---
 layout: default
 modal-id: 11
-date: 2025-10-15
+date: 2025-09-15
 img: EON_gen.png
 alt: EON_gen_altsm.png
 project-date: October 2025
