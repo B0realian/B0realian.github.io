@@ -9,7 +9,7 @@ client: School Project
 category: System
 description: Check back for more later!
 ---
-So, Nornware was happy with the Mesh-to-Image program and with two months left of my internship I was basically allowed to pick my own project, with the goal of trying to pass myself off as employable. At the time of writing this, I have only had one week of development, so it is still early days. But what I *have* done is to create a Blinn-Phong model of lighting with shadowmapping for realtime shadows. The shadow edges are still sharp and pixelated and since I'm guessing it would take me at least another week to learn how to do PCSS, they might stay this way.
+So, nornware was happy with the Mesh-to-Image program and with two months left of my internship I was basically allowed to pick my own project, with the goal of trying to pass myself off as employable. At the time of writing this, I have only had one week of development, so it is still early days. But what I *have* done is to create a Blinn-Phong model of lighting with shadowmapping for realtime shadows. The shadow edges are still sharp and pixelated and since I'm guessing it would take me at least another week to learn how to do PCSS, they might stay this way.
 
 Light straight on:
 
