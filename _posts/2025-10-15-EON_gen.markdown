@@ -1,0 +1,28 @@
+---
+layout: default
+modal-id: 11
+date: 2025-10-15
+img: EON_gen.png
+alt: EON_gen_altsm.png
+project-date: October 2025
+client: Friend
+category: Tool
+description: Character generator for Swedish pen-and-paper rpg Eon
+---
+Straight after examination, I was back to work. Unfortunately, not having found a programming related job it was my old job that beckoned. Nevertheless, I decided to apply myself to what I call "lunch time fun" which is to code for about 20-30 minutes instead of socializing with my colleagues (actually, they have been mildly curious about my projects so it's been a bit of both). I figured it would have to be a small project or it would take years to finish. A friend of mine had requested a tool to generate characters for a pen-and-paper rpg called Eon and this seemed like a perfect opportunity to dabble with a GUI. You might be wondering about my work in progress and why I haven't continued with that instead. If you do, then the short explanation is that I no longer have the time for such a large project, at least not if I want to see any results any time soon. So, that project is currently on ice.
+
+I found some maps online for the rpg and decided to put them to use. So, the first thing that greets you is a big map of the most commonly played in area of Eon and that map is actually the button to start creating a character. Clearly, my reason is for the user to take the plunge into Eon.
+
+![Big map flanked by three small images](img/portfolio/EON_gen/intro.png "Tonight, we're taking over the world!")
+
+It would have made sense to take the opportunity to learn everything about Dear Imgui but since I am still all about wanting to progress my own knowledge, I made my own buttons. I decided to start simple with just a rectangle with a texture and a shader that highlights that texture when the mouse cursor crosses a rectangular collider. Whenever the mouse button is clicked I check if any buttons are currently colliding with the cursor, and if so execute the appropriate functions. Thus, I had a simple On Hover and a simple On Click for each button.
+
+That's about when I decided to get a bit stupid. The engines I have worked with create and destroy buttons on demand, meaning you tailor each to your needs and store that data in scripts attached to the buttons. I figured it would be more performant to have a pool of buttons that are repurposed for each "scene", both in terms of memory management and framerate. Obviously, it is ludicrous to chase performance for a tiny text-and-image tool but it was about the exercise rather than actual performance. All it really meant, though, was that I attached an ID to each button and put a lot of data in header files. When the scene changes, the buttons look for data in a different header file. For instance: when the character's background is determined, two randomized choices appear based on what area the character lives in. With six different areas to choose from, there are more than 300 different backgrounds to select from, each with its own descriptive text to appear. All this text is in a header for backgrounds.
+
+![Buttons with different looking environments on them](img/portfolio/EON_gen/background.gif "Which background leads to working with programming?")
+
+However, I soon realised that some choices along the way lead to different sub-choices, which was why I needed to be able to swap button ID on the fly. Some ethnicities, for example, prompt the user to select a home province for that ethnicity:
+
+![Gallery of ethnicities that is changed to a country map](img/portfolio/EON_gen/ethnicity.gif "Look, Amazon can't deliver to you unless you specify exactly where you're from!")
+
+As can hopefully be seen from the gif above, I realised that with all the fancy textures on the buttons, there was limited screen space for text. So I made text part of the On Hover effect. Another thing I wanted was for the user to able to select province by choosing from a map of the country. While the textures are still rectangular, obviously the colliders needed a lot of work for a smooth experience. My solution was to, instead of making fancy polygon colliders, simply stack more rectangular colliders on each button until enough of the visible part was covered. It is certainly simpler to stick with rectangular colliders and while this could have been an opportunity to work with more advanced colliders, you really want a graphic editor to trim in polygon colliders and I had already taken a lot of time to place each province (almost) exactly right.
