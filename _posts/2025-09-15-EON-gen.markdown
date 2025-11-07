@@ -15,9 +15,69 @@ I found some maps online for the rpg and decided to put them to use. So, the fir
 
 ![Big map flanked by three small images](img/portfolio/EON_gen/intro.png "Tonight, we're taking over the world!")
 
-It would have made sense to take the opportunity to learn everything about Dear Imgui but since I am still all about wanting to progress my own knowledge, I made my own buttons. I decided to start simple with just a rectangle with a texture and a shader that highlights that texture when the mouse cursor crosses a rectangular collider. Whenever the mouse button is clicked I check if any buttons are currently colliding with the cursor, and if so execute the appropriate functions. Thus, I had a simple On Hover and a simple On Click for each button.
+It would have made sense to take the opportunity to learn everything about Dear Imgui but since I am still all about wanting to progress my own skills, I made my own buttons. I decided to start simple with just a rectangle with a texture and a shader that highlights that texture when the mouse cursor crosses a rectangular collider. Whenever the mouse button is clicked I check if any buttons are currently colliding with the cursor, and if so execute the appropriate functions. Thus, I had a simple On Hover and a simple On Click for each button.
 
-That's about when I decided to get a bit stupid. The engines I have worked with create and destroy buttons on demand, meaning you tailor each to your needs and store that data in scripts attached to the buttons. I figured it would be more performant to have a pool of buttons that are repurposed for each "scene", both in terms of memory management and framerate. Obviously, it is ludicrous to chase performance for a tiny text-and-image tool but it was about the exercise rather than actual performance. All it really meant, though, was that I attached an ID to each button and put a lot of data in header files. When the scene changes, the buttons look for data in a different header file. For instance: when the character's background is determined, two randomized choices appear based on what area the character lives in. With six different areas to choose from, there are more than 300 different backgrounds to select from, each with its own descriptive text to appear. All this text is in a header for backgrounds.
+Since making a graphical UI editor seemed a bit much for a small project, I knew I had to bake a lot of versatility into the button class, to make it easier for me to place everything correctly and getting the UX I wanted out of it. As a result, the button class has more overloads than you can shake a stick at! There are 11 functions to set size and position of the button as well as the collider. Here's what the entire class looks like:
+
+````cpp
+class button
+{
+public:
+	void init(uint16_t in_id, float in_layer);
+	~button();
+	void set_id(uint16_t in_id);
+	void load_texture(const char* in_filename, uint16_t screen_width, uint16_t screen_height);
+	void load_texture(const char* in_filename, float in_scale, uint16_t screen_width, uint16_t screen_height);
+	void add_collider(double in_x, double in_y, double in_width, double in_height, button_collider* in_collider);
+	void remove_colliders();
+	void set_position(float in_x, float in_y);
+	void set_position(float in_x, float in_y, float in_layer);
+	void set_position(float in_x, float in_y, float in_layer, float in_width, float in_height);
+	void set_collider(E_system command);
+	void set_collider(double in_x, double in_y, double in_width, double in_height);
+	void set_collider(double in_x, double in_y, double in_width, double in_height, button_collider* in_collider);
+	void set_position_and_collider(float in_x, float in_y);
+	void set_position_and_collider(float in_x_pos, float in_y_pos, E_system command);
+	void set_position_and_collider(float in_x_pos, float in_y_pos, double in_x_coll, double in_y_coll, double in_width_coll, double in_height_coll);
+	void set_layer(float in_layer);
+	void set_size(float in_width, float in_height);
+	void toggle();
+	void set_toggle(bool in_toggle);
+	void toggle_in_array(std::vector<button*>& in_array);
+	glm::vec3 get_position();
+	glm::vec2 get_size();
+	bool toggled();
+	bool collision(double in_x, double in_y, uint16_t screen_width, uint16_t screen_height);
+	void bind(const uint32_t in_unit = 0);
+	void draw();
+	void unbind(const uint32_t in_unit = 0);
+
+	uint16_t button_id = 0;
+	bool b_collided = false;
+
+private:
+	void load_buffer();
+
+	struct button_position* position;
+	struct button_collider* collider;
+	std::vector<button_collider*> colliders;
+	std::vector<vertex_button> vertices;
+	uint32_t texture = 0;
+	uint32_t vao = 0;
+	uint32_t vbo = 0;
+	bool b_toggled = false;
+};
+````
+
+If you had the stamina to read through that, you may have noticed that there is a function to set collider with an enum. This is because by design I chose that a button must always have a collider. However, there are times when you don't want a collider, such as when an option attached to a button is not available. My solution then is to set the collider far off screen with 0 area. To make this perfectly clear, I made a macro that simply fills in rubbish coordinates, so that in the code it looks like this:
+
+````cpp
+_state.button_01.set_collider(NO_COLLIDER);
+````
+
+But I wanted to be even clearer! When you scan through the macro section, you're going to wonder what the one with some magic numbers actually does. So I made an enum with a label that also says NO_COLLIDER and then made button::set_collider functions to accept an enum and set the rubbish coordinates there, where you expect them to be set. All that is perhaps going further than necessary but I know how confusing it can get with macros so I'd rather be clearer than necessary.
+
+I also decided to get a bit stupid. The engines I have worked with create and destroy buttons on demand, meaning you tailor each to your needs and store that data in scripts attached to the buttons, and when the button has served its purpose you delete the lot. I figured it would be more performant to have a pool of buttons that are repurposed for each "scene", both in terms of memory management and framerate. Obviously, it is ludicrous to chase slivers of performance for a tiny text-and-image tool but it was about the exercise rather than actual performance. All it really meant, though, was that I attached an ID to each button and put a lot of data in header files. When the scene changes, the buttons look for data in a different header file. For instance: when the character's background is determined, two randomized choices appear based on what area the character lives in. With six different areas to choose from, there are more than 300 different backgrounds to select from, each with its own descriptive text to appear. All this text is in a header for backgrounds.
 
 ![Buttons with different looking environments on them](img/portfolio/EON_gen/EON_backgrund.gif "Which background leads to working with programming?")
 
@@ -31,3 +91,101 @@ There was one more thing, however: what if the user needs to go through several 
 
 ![Gallery of ethnicities that is changed to another country map](img/portfolio/EON_gen/EON_damarier.gif "Sorry sir, it looks like we need your shoe size and political affiliation as well.")
 
+Going into this project, I thought it would be a lot smaller than it's turned out to be. There are simply so many sub-choices, each with their own needs for representation, and so much text that I've been bogged down with all sorts of challenges. A challenge that I set for myself before I started was to not use std::string anywhere in the project. With so much text, this has definitely made progress harder, but also means the program is way more memory efficient (yay!). I store all the text as vectors of char* and at first I started editing the length of each char* within the vectors to the length required by my GUI. But it takes a lot of time to make sure thousands of lines of text have the correct length and then you realise you want to change the layout. So I wrote a function that chops up each char* to several smaller char* of a specified length (and cursed myself for not writing it from the get go):
+
+````cpp
+for (char* str : temp_array)
+{
+	array_length = static_cast<int>(strlen(str));
+	array_delta = 0;
+	int i = row_length;
+
+	while (array_delta < array_length)
+	{
+		if (array_length < row_length)
+		{
+			for (int ch = 0; ch <= array_length; ch++)
+				in_temp_array[number_strings][ch] = str[ch];
+			in_temp_array[number_strings][array_length + 1] = '\0';
+			number_strings++;
+			break;
+		}
+
+		if (str[i] == ' ' || str[i] == '-')
+		{
+			memcpy(in_temp_array[number_strings], &str[array_delta], i - array_delta);
+			in_temp_array[number_strings][i - array_delta + 1] = '\0';
+			number_strings++;
+			array_delta = i + 1;
+
+			if (i + row_length < array_length)
+				i += row_length;
+			else
+			{
+				memcpy(in_temp_array[number_strings], &str[array_delta], array_length - array_delta);
+				in_temp_array[number_strings][array_length - array_delta] = '\0';
+				number_strings++;
+				array_delta = i + 1;
+				break;
+			}
+		}
+		else if (i < 1)
+		{
+			std::cout << "Word longer than allowed row length. Check your strings." << std::endl;
+			return;
+		}
+		else
+		{
+			i--;
+		}
+	}
+}
+````
+
+In character creation, clearly the need for randomized numbers arises from time to time. I probably should have gone with the standard random function provided in C++ but you keep hearing about how all the standard randomizers are only pseudo random and you begin to wonder. I can't take much credit for my random function either, since the hard part, i.e. the actual generator, is provided and I found a usage example on Stack Overflow that I mostly stuck to. All I really did was add an optional range. So, basically, I stole someone else's code using yet someone else's code:
+
+````cpp
+uint32_t _random_int(int32_t in_min, int32_t in_max)
+{
+    std::random_device rd;
+    std::mt19937::result_type seed = rd() ^ ((std::mt19937::result_type)std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count() +
+        (std::mt19937::result_type)std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count());
+
+    std::mt19937 gen(seed);
+
+    std::mt19937::result_type number = gen();
+    
+	if (in_max != in_min) // If they are equal, return the random number as is.
+    {
+        number = (number % (in_max - in_min + 1)) + in_min;
+    }
+
+    return number;
+}
+````
+
+The reason why I think I should have gone with the standard solution is not so much that it would have saved time (I pinched the code anyway, so this only took me about half an hour of googling). Rather, it is because pseudo randomness has a more random feel to most of us. True random series will have clusters of the same numbers cropping up next to each other more often than most of us are prepared for. If you're really interested, there is a wealth of information, not just about randomness but about this particular generator (Mersenne Twister) and its siblings, all within the std::random_device.
+
+Show me a character and I'll show you data! And boy is there a lot of it in an Eon character. I put all my struct prototypes in a single header (structs.h) and it's more than 2000 lines long. That is in spite of having 12 different enums holding information as well (yes, I have all my enums in another header, enums.h) although to be fair most of those structs also contain functions to "clear" data and operator overloads. I have also tried a couple of different solutions to the problem of finding values in structs at runtime. The easiest way of all would have been to create std::maps (or std::pairs) of a lot of data but a problem is that any skill in Eon can have a bias for the character, meaning it can be either unusually easy or hard to learn. Therefore, each skill needs to store not just name and value but a modifier also. So, I chose to go with structs for the bulk of all data, with a basic skill holding an int value and two bools. So, getters and setters! In one case I went with a separate vector storing which abilities already have a value above 0 (this for abilities that are only meant to receive a value once) and for another case I wrote a function using pointer arithmetic:
+
+````cpp
+uint16_t get_value(int field)
+{
+	if ((field * sizeof(uint16_t)) > (sizeof(*this)))
+		std::cout << "WARNING! Out of range of struct!" << std::endl;
+	
+	uint16_t* value = reinterpret_cast<uint16_t*>(&this[0]);
+	return *(value + field);
+}
+
+void set_value(int field, uint16_t new_value)
+{
+	if ((field * sizeof(uint16_t)) > (sizeof(*this)))
+		std::cout << "WARNING! Out of range of struct!" << std::endl;
+
+	uint16_t* value = reinterpret_cast<uint16_t*>(&this[0]);
+	*(value + field) = new_value;
+}
+````
+
+I have seen cases, and indeed many recommendations, where programmers make templates that do this instead. The trouble with pointer arithmetic is that it only works for one data type at a time and it becomes useless if there is padding in the struct. As a result, I consider a template too far removed to be used safely and prefer to put the function inside the struct, even if it means copying the exact same function into every struct, where it is easy to see whether it is workable or not. I decided to not throw any exceptions if the user goes out of range. (SHOULD CHECK THAT ANY OS WILL ONLY CRASH PROGRAM IF TRYING TO ACCESS NON EXISTANT MEMORY).
