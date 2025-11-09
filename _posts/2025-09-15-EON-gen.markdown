@@ -79,7 +79,7 @@ But I wanted to be even clearer! When you scan through the macro section, you're
 
 I also decided to get a bit stupid. The engines I have worked with create and destroy buttons on demand, meaning you tailor each to your needs and store that data in scripts attached to the buttons, and when the button has served its purpose you delete the lot. I figured it would be more performant to have a pool of buttons that are repurposed for each "scene", both in terms of memory management and framerate. Obviously, it is ludicrous to chase slivers of performance for a tiny text-and-image tool but it was about the exercise rather than actual performance. All it really meant, though, was that I attached an ID to each button and put a lot of data in header files. When the scene changes, the buttons look for data in a different header file. For instance: when the character's background is determined, two randomized choices appear based on what area the character lives in. With six different areas to choose from, there are more than 300 different backgrounds to select from, each with its own descriptive text to appear. All this text is in a header for backgrounds.
 
-![Buttons with different looking environments on them](img/portfolio/EON_gen/EON_backgrund.gif "Which background leads to working with programming?")
+![Buttons with different looking environments on them](img/portfolio/EON_gen/EON_bakgrund.gif "Which background leads to working with programming?")
 
 However, I soon realised that some choices along the way lead to different sub-choices, which was why I needed to be able to swap button ID on the fly. Some ethnicities, for example, prompt the user to select a home province for that ethnicity:
 
@@ -156,7 +156,7 @@ uint32_t _random_int(int32_t in_min, int32_t in_max)
     std::mt19937::result_type number = gen();
     
 	if (in_max != in_min) // If they are equal, return the random number as is.
-    {
+	{
         number = (number % (in_max - in_min + 1)) + in_min;
     }
 
@@ -181,11 +181,14 @@ uint16_t get_value(int field)
 void set_value(int field, uint16_t new_value)
 {
 	if ((field * sizeof(uint16_t)) > (sizeof(*this)))
-		std::cout << "WARNING! Out of range of struct!" << std::endl;
+		{
+			std::cout << "WARNING! Out of range of struct!" << std::endl;
+			return;
+		}
 
 	uint16_t* value = reinterpret_cast<uint16_t*>(&this[0]);
 	*(value + field) = new_value;
 }
 ````
 
-I have seen cases, and indeed many recommendations, where programmers make templates that do this instead. The trouble with pointer arithmetic is that it only works for one data type at a time and it becomes useless if there is padding in the struct. As a result, I consider a template too far removed to be used safely and prefer to put the function inside the struct, even if it means copying the exact same function into every struct, where it is easy to see whether it is workable or not. I decided to not throw any exceptions if the user goes out of range. (SHOULD CHECK THAT ANY OS WILL ONLY CRASH PROGRAM IF TRYING TO ACCESS NON EXISTANT MEMORY).
+I have seen cases, and indeed many recommendations, where programmers make templates that do this instead. The trouble with pointer arithmetic is that it only works for one data type at a time and it becomes useless if there is padding in the struct. As a result, I consider a template too far removed to be used safely and prefer to put the function inside the struct, even if it means copying the exact same function into every struct, where it is easy to see whether it is workable or not. I decided to not throw any exceptions if the user goes out of range but instead just write a warning. Writing out of range is typically fairly safe as well but here I return without setting a value.
