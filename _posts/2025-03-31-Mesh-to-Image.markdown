@@ -5,11 +5,11 @@ date: 2025-03-31
 img: m2i.png
 alt: m2i_altsm.png
 project-date: March 2025
-client: Nornware
+client: nornware
 category: Tooling
 description: Creating terrain out of hi-res meshes
 ---
-So, it was time to make the specified terrain creator. I repurposed some of the code from the previous attempt and decided to use the very excellent STB lib by Sean Barrett because there was no way I was going to spend all the time to write my own loaders for .png or .jpg and I really couldn't expect the user to convert all textures to .tga. I did, however, write my own loaders for .obj, .fbx (admittedly using the fbx sdk) and .gltf meshes. To parse the json "header" of .gltf I included the also excellent json.hpp by Niels Lohmann. Why? Partly because I knew I could and it would be a good learning experience and partly because I wanted the added portability: smaller file size and fewer dependencies. This was also something that low level wizard Johno of Nornware (where I was doing my internship) respected and encouraged.
+So, it was time to make the specified terrain creator. I repurposed some of the code from the previous attempt and decided to use the very excellent STB lib by Sean Barrett because there was no way I was going to spend all the time to write my own loaders for .png or .jpg and I really couldn't expect the user to convert all textures to .tga. I did, however, write my own loaders for .obj, .fbx (admittedly using the fbx sdk) and .gltf meshes. To parse the json "header" of .gltf I included the also excellent json.hpp by Niels Lohmann. Why? Partly because I knew I could and it would be a good learning experience and partly because I wanted the added portability: smaller file size and fewer dependencies. This was also something that low level wizard Johno of nornware respected and encouraged.
 
 Creating an array of vertices from mesh data is typically straight forward. However, I *did* groan when I realised that the gltf-format supported data embedded as a base64 encoded string. Incidentally, this is why you should only use .gltfs with embedded data if running webGL (or another web graphics API): load time and performance takes a definite hit from decoding the data. However daunting I initially found the prospect of writing a decoder, I was surprised when my first attempt just worked. Partly, this stemmed from not having copied someone else's decoder: I had to look up what base64 entailed which detailed some of the necessary steps (such as what characters are included and in what order) but otherwise I just wrote what I figured should be how it works.
 
