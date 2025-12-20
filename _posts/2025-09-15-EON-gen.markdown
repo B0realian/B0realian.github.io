@@ -23,8 +23,19 @@ Since making a graphical UI editor seemed a bit much for a small project, I knew
 class button
 {
 public:
+	typedef void (*action_ptr)();
+	typedef void (*action_ptr_1p)(void* p1);
+	typedef void (*action_ptr_2p)(void* p1, void* p2);
+	typedef void (*action_ptr_3p)(void* p1, void* p2, void* p3);
+	
+
 	void init(uint16_t in_id, float in_layer);
 	~button();
+	void on_click();
+	void set_action(action_ptr a);
+	void set_action(action_ptr_1p a, void* p1);
+	void set_action(action_ptr_2p a, void* p1, void* p2);
+	void set_action(action_ptr_3p a, void* p1, void* p2, void* p3);
 	void set_id(uint16_t in_id);
 	void load_texture(const char* in_filename, uint16_t screen_width, uint16_t screen_height);
 	void load_texture(const char* in_filename, float in_scale, uint16_t screen_width, uint16_t screen_height);
@@ -41,7 +52,9 @@ public:
 	void set_position_and_collider(float in_x_pos, float in_y_pos, double in_x_coll, double in_y_coll, double in_width_coll, double in_height_coll);
 	void set_layer(float in_layer);
 	void set_size(float in_width, float in_height);
+	void remove_button_from_array(std::vector<button*>& in_array);
 	void toggle();
+	const bool get_toggle();
 	void set_toggle(bool in_toggle);
 	void toggle_in_array(std::vector<button*>& in_array);
 	glm::vec3 get_position();
@@ -52,20 +65,26 @@ public:
 	void draw();
 	void unbind(const uint32_t in_unit = 0);
 
+	
+	void (*action)(void (*func), void*, void*) = 0;
 	uint16_t button_id = 0;
 	bool b_collided = false;
 
 private:
 	void load_buffer();
 
-	struct button_position* position;
-	struct button_collider* collider;
+	struct button_position* position { 0 };
+	struct button_collider* collider { 0 };
 	std::vector<button_collider*> colliders;
 	std::vector<vertex_button> vertices;
 	uint32_t texture = 0;
 	uint32_t vao = 0;
 	uint32_t vbo = 0;
 	bool b_toggled = false;
+
+	void* arg_1 = 0;
+	void* arg_2 = 0;
+	void* arg_3 = 0;
 };
 ````
 
@@ -76,6 +95,49 @@ _state.button_01.set_collider(NO_COLLIDER);
 ````
 
 But I wanted to be even clearer! When you scan through the macro section, you're going to wonder what the one with some magic numbers actually does. So I made an enum with a label that also says NO_COLLIDER and then made button::set_collider functions to accept an enum and set the rubbish coordinates there, where you expect them to be set. All that is perhaps going further than necessary but I know how confusing it can get with macros so I'd rather be clearer than necessary.
+
+Another rather important feature with buttons is for something to happen when you press them. If you are coming from other languages, you will be spoilt for choice, because in C/C++ there are no proper delegates available. So I decided to write my own action system using function pointers, void pointers and a lot of casting!
+
+The action, or callback function, is set like this:
+
+````cpp
+void button::set_action(action_ptr_3p a, void* p1, void* p2, void* p3)
+{
+	reinterpret_cast<void*&>(action) = a;
+	arg_1 = p1;
+	arg_2 = p2;
+	arg_3 = p3;
+}
+````
+
+and is used like this:
+
+````cpp
+void button::on_click()
+{
+	if (action == 0)
+	{
+		std::cout << "Button was pressed but there was no action to take." << std::endl;
+		return;
+	}
+
+	action(arg_1, arg_2, arg_3);
+}
+````
+
+The button is defined in runtime:
+
+````cpp
+_state.button_03.set_action(reinterpret_cast<button::action_ptr_1p>(&_folkslag_jargier), reinterpret_cast<E_jargisk_provins*>(E_jargisk_provins::MERUN));
+````
+
+or with a handy macro:
+
+````cpp
+SET_BUTTON_A3(&_state.button_01, FÄRDER_ÄVENTYR, 1.f, left_margin, row, &_händelser, &färder_äventyr_text, &character.färder_äventyr, &character.händelseslag.färder_äventyr)
+````
+
+where the &färder_äventyr_text parameter is actually a nested callback function. I was actually pleasantly surprised that the compiler works everything out in on_click() regardless of how many arguments the callback function actually takes.
 
 I also decided to get a bit stupid. The engines I have worked with create and destroy buttons on demand, meaning you tailor each to your needs and store that data in scripts attached to the buttons, and when the button has served its purpose you delete the lot. I figured it would be more performant to have a pool of buttons that are repurposed for each "scene", both in terms of memory management and framerate. Obviously, it is ludicrous to chase slivers of performance for a tiny text-and-image tool but it was about the exercise rather than actual performance. All it really meant, though, was that I attached an ID to each button and put a lot of data in header files. When the scene changes, the buttons look for data in a different header file. For instance: when the character's background is determined, two randomized choices appear based on what area the character lives in. With six different areas to choose from, there are more than 300 different backgrounds to select from, each with its own descriptive text to appear. All this text is in a header for backgrounds.
 
@@ -166,7 +228,7 @@ uint32_t _random_int(int32_t in_min, int32_t in_max)
 
 The reason why I think I should have gone with the standard solution is not so much that it would have saved time (I pinched the code anyway, so this only took me about half an hour of googling). Rather, it is because pseudo randomness has a more random feel to most of us. True random series will have clusters of the same numbers cropping up next to each other more often than most of us are prepared for. If you're really interested, there is a wealth of information, not just about randomness but about this particular generator (Mersenne Twister) and its siblings, all within the std::random_device.
 
-Show me a character and I'll show you data! And boy is there a lot of it in an Eon character. I put all my struct prototypes in a single header (structs.h) and it's more than 2000 lines long. That is in spite of having 12 different enums holding information as well (yes, I have all my enums in another header, enums.h) although to be fair most of those structs also contain functions to "clear" data and operator overloads. I have also tried a couple of different solutions to the problem of finding values in structs at runtime. The easiest way of all would have been to create std::maps (or std::pairs) of a lot of data but a problem is that any skill in Eon can have a bias for the character, meaning it can be either unusually easy or hard to learn. Therefore, each skill needs to store not just name and value but a modifier also. So, I chose to go with structs for the bulk of all data, with a basic skill holding an int value and two bools. So, getters and setters! In one case I went with a separate vector storing which abilities already have a value above 0 (this for abilities that are only meant to receive a value once) and for another case I wrote a function using pointer arithmetic:
+Show me a character and I'll show you data! And boy is there a lot of it in an Eon character. I put all my structs in a single header (structs.h) and it's more than 2000 lines long. That is in spite of having 12 different enums holding information as well (yes, I have all my enums in another header, enums.h) although to be fair most of those structs also contain functions to "clear" data and operator overloads. I have also tried a couple of different solutions to the problem of finding values in structs at runtime. The easiest way of all would have been to create std::maps (or std::pairs) of a lot of data but a problem is that any skill in Eon can have a bias for the character, meaning it can be either unusually easy or hard to learn. Therefore, each skill needs to store not just name and value but a modifier also. So, I chose to go with structs for the bulk of all data, with a basic skill holding an int value and two bools. So, getters and setters! In one case I went with a separate vector storing which abilities already have a value above 0 (this for abilities that are only meant to receive a value once) and for another case I wrote a function using pointer arithmetic:
 
 ````cpp
 uint16_t get_value(int field)
