@@ -137,7 +137,9 @@ or with a handy macro:
 SET_BUTTON_A3(&_state.button_01, FÄRDER_ÄVENTYR, 1.f, left_margin, row, &_händelser, &färder_äventyr_text, &character.färder_äventyr, &character.händelseslag.färder_äventyr)
 ````
 
-where the &färder_äventyr_text parameter is actually a nested callback function. I was actually pleasantly surprised that the compiler works everything out in on_click() regardless of how many arguments the callback function actually takes.
+where the &färder_äventyr_text parameter is actually a nested callback function. I was actually pleasantly surprised that the compiler works everything out in on_click() regardless of how many arguments the callback function actually takes (as long as there are no more than my max, which is 3).
+
+
 
 I also decided to get a bit stupid. The engines I have worked with create and destroy buttons on demand, meaning you tailor each to your needs and store that data in scripts attached to the buttons, and when the button has served its purpose you delete the lot. I figured it would be more performant to have a pool of buttons that are repurposed for each "scene", both in terms of memory management and framerate. Obviously, it is ludicrous to chase slivers of performance for a tiny text-and-image tool but it was about the exercise rather than actual performance. All it really meant, though, was that I attached an ID to each button and put a lot of data in header files. When the scene changes, the buttons look for data in a different header file. For instance: when the character's background is determined, two randomized choices appear based on what area the character lives in. With six different areas to choose from, there are more than 300 different backgrounds to select from, each with its own descriptive text to appear. All this text is in a header for backgrounds.
 
@@ -254,3 +256,9 @@ void set_value(int field, uint16_t new_value)
 ````
 
 I have seen cases, and indeed many recommendations, where programmers make templates that do this instead. The trouble with pointer arithmetic is that it only works for one data type at a time and it becomes useless if there is padding in the struct. As a result, I consider a template too far removed to be used safely and prefer to put the function inside the struct, even if it means copying the exact same function into every struct, where it is easy to see whether it is workable or not. I decided to not throw any exceptions if the user goes out of range but instead just write a warning. Writing out of range is typically fairly safe as well but here I return without setting a value.
+
+The most complex section of the character creator was the skills section. The challenge was to give the user access to all 170 different skills at the same time with the possibility to raise skill values as well as regressing them, running several different skill point pools simultaneously as well as considering that some skills could have picked up points bonuses along the way. I also decided to present the user with a more or less complete roster of attributes to paint a fuller picture of what the character was like at this stage.
+
+![Buttons, buttons everywhere, nor a coat to shrink](img/portfolio/EON_gen/EON_skills.gif "Isn't programming skills here somewhere? Asking for a friend.")
+
+So, as you can hopefully see I went with toggle buttons along the top for each skills category so I wouldn't have to put too many buttons on screen at any given time. There are nearly 300 buttons in this section so it would have been really difficult to fit them all in there at the same time.
