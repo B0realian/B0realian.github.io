@@ -262,3 +262,7 @@ The most complex section of the character creator was the skills section. The ch
 ![Buttons, buttons everywhere, nor a coat to shrink](img/portfolio/EON_gen/EON_skills.gif "Isn't programming skills here somewhere? Asking for a friend.")
 
 So, as you can hopefully see I went with toggle buttons along the top for each skills category so I wouldn't have to put too many buttons on screen at any given time. There are nearly 300 buttons in this section so it would have been really difficult to fit them all in there at the same time.
+
+At some point, I noticed that my standard button (the green blob in a white square) colours obscured the toggling effect. That is, it was hard to see which button was toggled. So I wrote some code to swap the texture when toggled and added persistent scale to the buttons. This is an example of "why didn't I do this straight away?". I thought about it as soon as I realised I wanted toggles but reasoned that it would take more time and effort than just adding some brightness in the shader. To be fair, those first toggle buttons all had different textures so I would have had to make a lot more art as well as lists with what texture to swap with which. At any rate, compare the clarity between texture swap and added brightness!
+
+![Toggle me sideways!](img/portfolio/EON_gen/EON_toggles.gif "Shining bright, feeling blue.")
