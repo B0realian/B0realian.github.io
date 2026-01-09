@@ -206,6 +206,8 @@ for (char* str : temp_array)
 }
 ````
 
+The astute coder will realise that since I am using memcpy and not checking to see whether the resulting char** is out of bounds, this function can overwrite the memory explicitly allocated to it. In this scenario, this actually served my purpose because I have enough memory allocated on the heap to fill the screen but I need it split up between 8 different arrays for one particular case. Just, if you want to copy this code, you will need to add a bounds check.
+
 In character creation, clearly the need for randomized numbers arises from time to time. I probably should have gone with the standard random function provided in C++ but you keep hearing about how all the standard randomizers are only pseudo random and you begin to wonder. I can't take much credit for my random function either, since the hard part, i.e. the actual generator, is provided and I found a usage example on Stack Overflow that I mostly stuck to. All I really did was add an optional range. So, basically, I stole someone else's code using yet someone else's code:
 
 ````cpp
